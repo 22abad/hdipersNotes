@@ -101,30 +101,25 @@ function updateLang() {
 }
 toggleBtn.addEventListener('click', ()=>{ isEnglish = !isEnglish; updateLang(); });
 
-// 更加鲁棒的 FrontMatter 解析器
 function parseFrontMatter(raw){
+    raw = raw.trim();
     const result = {meta:{}, body: raw};
-    const m = raw.match(/^---\s*([\s\S]*?)\s*---\s*/);
-    if(!m) return result;
-    
-    const head = m[1];
-    // 使用正则匹配 key: value，避免简单的 split 出错
+    const match = raw.match(/^-{3,}\s*([\s\S]+?)\s*-{3,}\s*([\s\S]*)$/);
+    if(!match) return result;
+    const head = match[1];
     const regex = /^([a-zA-Z0-9_-]+):\s*(.+)$/gm;
-    let match;
-    while ((match = regex.exec(head)) !== null) {
-        const key = match[1].trim();
-        let val = match[2].trim();
-        // 去除引号
+    let r;
+    while ((r = regex.exec(head)) !== null) {
+        const key = r[1].trim();
+        let val = r[2].trim();
         if (/^['"].*['"]$/.test(val)) val = val.slice(1, -1);
-        
-        // 处理 tags 和 categories (逗号分隔转数组)
         if (key === 'tags' || key === 'categories') {
             result.meta[key] = val.split(',').map(s => s.trim());
         } else {
             result.meta[key] = val;
         }
     }
-    result.body = raw.slice(m[0].length); 
+    result.body = match[2]; 
     return result;
 }
 
@@ -153,7 +148,6 @@ window.clearFilter = function() {
 function createPostCard(post){
     const card = document.createElement('div');
     card.className = 'post block group p-6 rounded bg-neutral-900/40 hover:bg-neutral-900/80 transition border border-neutral-800 hover:border-yellow-500/50 relative overflow-hidden';
-
     const linkOverlay = document.createElement('a');
     const id = encodeURIComponent(post.filename.replace(/\.md$/i,''));
     linkOverlay.href = `post.html?id=${id}`;
@@ -162,9 +156,8 @@ function createPostCard(post){
 
     const topRow = document.createElement('div');
     topRow.className = 'flex justify-between items-center mb-3 relative z-10 pointer-events-none opacity-60 font-mono text-xs';
-    
     const dateSpan = document.createElement('span');
-    dateSpan.textContent = post.date || 'UNKNOWN_DATE'; // 如果还是 Unknown，检查 md 文件的 date 字段
+    dateSpan.textContent = post.date || 'UNKNOWN_DATE';
     topRow.appendChild(dateSpan);
 
     const cats = Array.isArray(post.categories) ? post.categories : (post.categories ? [post.categories] : []);
@@ -189,14 +182,12 @@ function createPostCard(post){
 
     const contentRow = document.createElement('div');
     contentRow.className = 'flex justify-between items-start relative z-10 pointer-events-none mb-4';
-
     const p = document.createElement('div'); 
     p.className = 'text-sm text-neutral-400 font-light leading-relaxed flex-1';
     const pEn = document.createElement('span'); pEn.className = 'content-en'; pEn.textContent = post.summary_en || '';
     const pZh = document.createElement('span'); pZh.className = 'content-zh hidden'; pZh.textContent = post.summary_zh || '';
     p.appendChild(pEn); p.appendChild(pZh);
     contentRow.appendChild(p);
-
     const thumbBox = document.createElement('div');
     thumbBox.className = 'thumb-box';
     if (post.thumbnail) {
@@ -234,8 +225,25 @@ function renderPosts(postsToRender) {
     updateLang();
 }
 
+// 🔥 带有 SessionStorage 缓存的加载器 🔥
 async function loadData(){
     const listContainer = document.getElementById('post-list');
+    
+    // 1. 检查缓存
+    const CACHE_KEY = 'hdipers_posts_cache';
+    const CACHE_TIME_KEY = 'hdipers_posts_time';
+    const cachedData = sessionStorage.getItem(CACHE_KEY);
+    const cachedTime = sessionStorage.getItem(CACHE_TIME_KEY);
+    const now = Date.now();
+    
+    // 如果缓存存在且小于5分钟，直接使用
+    if (cachedData && cachedTime && (now - cachedTime < 5 * 60 * 1000)) {
+        console.log("Using Cached Data");
+        ALL_POSTS = JSON.parse(cachedData);
+        renderPosts(ALL_POSTS);
+        return;
+    }
+
     try{
         const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`;
         const res = await fetch(apiUrl);
@@ -246,9 +254,7 @@ async function loadData(){
 
         ALL_POSTS = await Promise.all(mdFiles.map(async f=>{
             try{
-                // 使用 raw.githubusercontent.com 可能会有缓存，但也避免了 API 频繁调用
-                // 这里我们保持用 download_url (也是 raw 链接)
-                const txtRes = await fetch(f.download_url);
+                const txtRes = await fetch(f.download_url); // 这里是 Raw 链接，不耗 API
                 if(!txtRes.ok) throw new Error('Failed');
                 const text = await txtRes.text();
                 const parsed = parseFrontMatter(text);
@@ -274,18 +280,20 @@ async function loadData(){
             const db = b.date ? Date.parse(b.date) : 0;
             return (db - da) || a.filename.localeCompare(b.filename);
         });
+        
+        // 存入缓存
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify(ALL_POSTS));
+        sessionStorage.setItem(CACHE_TIME_KEY, now);
+        
         renderPosts(ALL_POSTS);
     }catch(err){
         console.error(err);
-        // 如果 API 失败 (Rate Limit)，提示用户
         let errorMsg = "CONNECTION_REFUSED";
-        if (err.message == 403) errorMsg = "API RATE LIMIT EXCEEDED (Wait 1hr)";
-        
+        if (err.message == 403) errorMsg = "API RATE LIMIT (Wait or Clear Cache)";
         listContainer.innerHTML = `<div class="text-center text-red-500 font-mono text-sm py-10">${errorMsg}<br><span class="text-xs opacity-50">Try refreshing later.</span></div>`;
     }
 }
 
-// 简单的网格背景
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 let w, h;
