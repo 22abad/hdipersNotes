@@ -11,10 +11,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
-        window.runMermaid = async () => { await mermaid.run({ querySelector: '.mermaid' }); };
+        // 挂载到 window 以便后续调用
+        window.runMermaid = async () => { 
+            await mermaid.run({ querySelector: '.mermaid' }); 
+        };
     </script>
     
     <style>
@@ -37,7 +41,10 @@
         .prose pre code { background: transparent; padding: 0; color: inherit; }
         .prose blockquote { border-left: 4px solid var(--accent); background: rgba(250, 204, 21, 0.05); padding: 1em 1.5em; color: #d4d4d4; font-style: italic; margin: 2em 0; }
         .prose img { border-radius: 8px; border: 1px solid #333; margin: 2rem auto; max-width: 100%; display: block; }
-        .mermaid { background: #171717; padding: 20px; border-radius: 8px; text-align: center; margin: 2rem 0; border: 1px solid #333; }
+        
+        /* Mermaid 样式 */
+        .mermaid { background: #171717; padding: 20px; border-radius: 8px; text-align: center; margin: 2rem 0; border: 1px solid #333; display: flex; justify-content: center;}
+        
         .prose table { width: 100%; border-collapse: collapse; margin: 2em 0; }
         .prose th, .prose td { border: 1px solid #333; padding: 0.75em; text-align: left; }
         .prose th { background: #262626; color: var(--accent); }
@@ -123,8 +130,7 @@
         if(!filename) { window.location.href = 'index.html'; return; }
         
         try {
-            // 🔥 使用 raw.githubusercontent.com + 时间戳 绕过 API 限制和缓存 🔥
-            // 这种方式没有 60次/小时 的限制
+            // 使用 Raw + Timestamp 绕过 API 限制
             const timestamp = new Date().getTime();
             const url = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${filename}.md?t=${timestamp}`;
             
@@ -138,8 +144,6 @@
             }
             
             const rawText = await res.text();
-            
-            // Raw 模式下不需要 Base64 解码，直接用
             const data = parseFrontMatter(rawText);
 
             document.title = (data.meta.title || 'Log') + ' | HDIPERS';
@@ -155,29 +159,40 @@
                 tagContainer.innerHTML = tagArray.map(t => `<span class="border border-neutral-700 px-1 rounded">#${t}</span>`).join(' ');
             }
 
-            const renderer = new marked.Renderer();
-            
-            renderer.image = function(href, title, text) {
-                if (!href) return text;
-                if (!href.startsWith('http') && !href.startsWith('//')) {
-                    const rawUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${href}`;
-                    return `<img src="${rawUrl}" alt="${text}" title="${title || ''}" />`;
+            // 🔥 核心修复：使用 marked.use() 替代 parse options 🔥
+            // 这种方式兼容性最强，彻底解决 [object Object] 问题
+            const renderer = {
+                image(href, title, text) {
+                    if (!href) return text;
+                    if (!href.startsWith('http') && !href.startsWith('//')) {
+                        const rawUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${href}`;
+                        return `<img src="${rawUrl}" alt="${text}" title="${title || ''}" />`;
+                    }
+                    return `<img src="${href}" alt="${text}" title="${title || ''}" />`;
+                },
+                link(href, title, text) {
+                    if (!href) return text;
+                    return `<a href="${href}" title="${title || ''}">${text}</a>`;
+                },
+                code(code, infostring) {
+                    // 确保 infostring 存在，防止崩溃
+                    const lang = (infostring || '').match(/\S*/)[0];
+                    
+                    if (lang === 'mermaid') {
+                        return `<div class="mermaid">${code}</div>`;
+                    }
+                    
+                    // Prism 高亮处理
+                    const validLang = (window.Prism && Prism.languages[lang]) ? lang : 'plaintext';
+                    return `<pre><code class="language-${validLang}">${code}</code></pre>`;
                 }
-                return `<img src="${href}" alt="${text}" title="${title || ''}" />`;
-            };
-            
-            renderer.link = function(href, title, text) {
-                if (!href) return text;
-                return `<a href="${href}" title="${title || ''}">${text}</a>`;
-            }
-            
-            renderer.code = function(code, language) {
-                if (language === 'mermaid') return `<div class="mermaid">${code}</div>`;
-                const validLang = Prism.languages[language] ? language : 'plaintext';
-                return `<pre><code class="language-${validLang}">${code}</code></pre>`;
             };
 
-            const rawHTML = marked.parse(data.body, { renderer: renderer });
+            // 使用 use() 挂载渲染器
+            marked.use({ renderer });
+
+            // 解析 Markdown
+            const rawHTML = marked.parse(data.body);
             
             let processedHTML = rawHTML
                 .replace(/\[EN\]([\s\S]*?)\[END\]/g, '<div class="content-en">$1</div>')
@@ -186,8 +201,13 @@
             document.getElementById('post-body').innerHTML = processedHTML;
             
             updateLang();
+            
+            // 触发高亮和图表渲染
             if(window.Prism) Prism.highlightAll();
-            if(window.runMermaid) window.runMermaid();
+            // 延迟一点点执行 Mermaid，确保 DOM 已经插入
+            setTimeout(() => {
+                if(window.runMermaid) window.runMermaid();
+            }, 100);
 
         } catch(e) {
             console.error(e);
