@@ -7,27 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;900&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root{--bg:#0a0a0a; --muted:#737373; --accent:#facc15;} /* ⚡️ 硬核黄 Accent */
+        :root{--bg:#0a0a0a; --muted:#737373; --accent:#facc15;}
         body { background-color: var(--bg); color: #e5e5e5; overflow-x: hidden; font-family: 'Inter', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .font-serif-cn { font-family: 'Noto Serif SC', serif; }
-        
-        /* 背景网格，更有科技感 */
         #gridCanvas { position: fixed; inset:0; width:100%; height:100%; z-index:-1; opacity:0.15; pointer-events: none;}
-        
         .fade-in { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
         @keyframes fadeIn { from{opacity:0; transform:translateY(20px) scale(0.98)} to{opacity:1; transform:none} }
-        
         a.post { text-decoration: none; }
-        
-        /* 标签药丸样式 */
         .tag-pill { 
             font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; 
             border: 1px solid #333; color: #666; transition: all 0.2s; 
         }
         .tag-pill:hover { border-color: var(--accent); color: var(--accent); background: rgba(250, 204, 21, 0.1); }
-
-        /* 缩略图样式 */
         .thumb-box {
             width: 80px; height: 80px; flex-shrink: 0; border-radius: 4px; 
             overflow: hidden; background: #171717; margin-left: 1rem; border: 1px solid #333;
@@ -52,18 +44,18 @@
 <main class="min-h-screen w-full max-w-3xl mx-auto px-4 sm:px-6 pt-32 pb-20 relative z-10">
     <article class="fade-in mb-20">
         <h1 class="text-5xl sm:text-7xl font-black mb-6 tracking-tight leading-none text-white">
-            <span class="content-en">SURVIVAL<br><span class="text-yellow-500">GUIDE.</span></span>
-            <span class="content-zh hidden font-serif-cn">硬核<br><span class="text-yellow-500">生存指南。</span></span>
+            <span class="content-en">HDip CS<br><span class="text-yellow-500">SURVIVAL.</span></span>
+            <span class="content-zh hidden font-serif-cn">HDip CS<br><span class="text-yellow-500">生存指南。</span></span>
         </h1>
         
         <div class="space-y-4 text-lg sm:text-xl text-neutral-400 font-normal max-w-xl leading-relaxed border-l-2 border-yellow-500/50 pl-6">
             <p class="content-en">
-                Raw notes on CS144, Algorithms, and High-Performance Engineering. 
-                <span class="block text-sm font-mono mt-2 text-neutral-500">// No fluff. Just logic.</span>
+                Engineering logs for Higher Diploma in Software Development.
+                <span class="block text-sm font-mono mt-2 text-neutral-500">// Java, Algorithms, Web & System Design.</span>
             </p>
             <p class="content-zh hidden font-serif-cn">
-                关于 CS144、算法与高性能工程的原始笔记。
-                <span class="block text-sm font-mono mt-2 text-neutral-500">// 拒绝废话。只有逻辑。</span>
+                软件开发高等文凭工程日志。
+                <span class="block text-sm font-mono mt-2 text-neutral-500">// 涵盖 Java, 算法, Web 与系统设计。</span>
             </p>
         </div>
     </article>
@@ -71,8 +63,8 @@
     <section id="blog-section" class="fade-in border-t border-neutral-800 pt-10">
         <div class="flex justify-between items-end mb-8 px-1">
             <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-yellow-500">
-                <span class="content-en">:: SYSTEM LOGS</span>
-                <span class="content-zh hidden">:: 系统日志</span>
+                <span class="content-en">:: RUNTIME LOGS</span>
+                <span class="content-zh hidden">:: 运行日志</span>
             </h2>
             <div id="filter-indicator" class="hidden text-xs flex items-center gap-2 font-mono">
                 <span class="opacity-50">FILTER:</span>
@@ -96,9 +88,8 @@
 
 <script>
 let ALL_POSTS = []; 
-// ⚡️ CRITICAL CONFIG UPDATE ⚡️
 const GITHUB_USERNAME = '22abad';
-const GITHUB_REPO = 'hdipersNotes'; // 已修正为新仓库
+const GITHUB_REPO = 'hdipersNotes'; 
 const POSTS_FOLDER = 'posts';
 
 const toggleBtn = document.getElementById('langToggle');
@@ -110,24 +101,31 @@ function updateLang() {
 }
 toggleBtn.addEventListener('click', ()=>{ isEnglish = !isEnglish; updateLang(); });
 
+// 更加鲁棒的 FrontMatter 解析器
 function parseFrontMatter(raw){
     const result = {meta:{}, body: raw};
     const m = raw.match(/^---\s*([\s\S]*?)\s*---\s*/);
     if(!m) return result;
-    const head = m[1]; const lines = head.split(/\r?\n/); let currentKey = null;
-    lines.forEach(line => {
-        if(!line.trim()) return;
-        if(line.trim().startsWith('-') && currentKey) {
-            let val = line.trim().replace(/^-\s*/, '').trim();
-            if(/^['"].*['"]$/.test(val)) val = val.slice(1,-1);
-            if(!Array.isArray(result.meta[currentKey])) result.meta[currentKey] = [];
-            result.meta[currentKey].push(val);
-        } else if(line.includes(':')) {
-            const idx = line.indexOf(':'); const key = line.slice(0, idx).trim(); let val = line.slice(idx+1).trim(); currentKey = key;
-            if(val) { if(/^['"].*['"]$/.test(val)) val = val.slice(1,-1); result.meta[key] = val; } else { result.meta[key] = []; }
+    
+    const head = m[1];
+    // 使用正则匹配 key: value，避免简单的 split 出错
+    const regex = /^([a-zA-Z0-9_-]+):\s*(.+)$/gm;
+    let match;
+    while ((match = regex.exec(head)) !== null) {
+        const key = match[1].trim();
+        let val = match[2].trim();
+        // 去除引号
+        if (/^['"].*['"]$/.test(val)) val = val.slice(1, -1);
+        
+        // 处理 tags 和 categories (逗号分隔转数组)
+        if (key === 'tags' || key === 'categories') {
+            result.meta[key] = val.split(',').map(s => s.trim());
+        } else {
+            result.meta[key] = val;
         }
-    });
-    result.body = raw.slice(m[0].length); return result;
+    }
+    result.body = raw.slice(m[0].length); 
+    return result;
 }
 
 function extractFirstImage(markdown) {
@@ -153,7 +151,6 @@ window.clearFilter = function() {
 }
 
 function createPostCard(post){
-    // 卡片样式更新：更硬朗的边框，更黑的背景
     const card = document.createElement('div');
     card.className = 'post block group p-6 rounded bg-neutral-900/40 hover:bg-neutral-900/80 transition border border-neutral-800 hover:border-yellow-500/50 relative overflow-hidden';
 
@@ -163,12 +160,11 @@ function createPostCard(post){
     linkOverlay.className = 'absolute inset-0 z-0';
     card.appendChild(linkOverlay);
 
-    // Top Row: Date & Badges
     const topRow = document.createElement('div');
     topRow.className = 'flex justify-between items-center mb-3 relative z-10 pointer-events-none opacity-60 font-mono text-xs';
     
     const dateSpan = document.createElement('span');
-    dateSpan.textContent = post.date || 'UNKNOWN_DATE';
+    dateSpan.textContent = post.date || 'UNKNOWN_DATE'; // 如果还是 Unknown，检查 md 文件的 date 字段
     topRow.appendChild(dateSpan);
 
     const cats = Array.isArray(post.categories) ? post.categories : (post.categories ? [post.categories] : []);
@@ -181,7 +177,6 @@ function createPostCard(post){
     }
     card.appendChild(topRow);
 
-    // Title
     const titleDiv = document.createElement('div');
     titleDiv.className = 'relative z-10 pointer-events-none pr-0 sm:pr-20';
     const h3 = document.createElement('h3');
@@ -192,7 +187,6 @@ function createPostCard(post){
     titleDiv.appendChild(h3);
     card.appendChild(titleDiv);
 
-    // Content Row
     const contentRow = document.createElement('div');
     contentRow.className = 'flex justify-between items-start relative z-10 pointer-events-none mb-4';
 
@@ -214,7 +208,6 @@ function createPostCard(post){
     contentRow.appendChild(thumbBox);
     card.appendChild(contentRow);
 
-    // Tags
     const tags = Array.isArray(post.tags) ? post.tags : (post.tags ? [post.tags] : []);
     if(tags.length > 0) {
         const metaRow = document.createElement('div');
@@ -253,6 +246,8 @@ async function loadData(){
 
         ALL_POSTS = await Promise.all(mdFiles.map(async f=>{
             try{
+                // 使用 raw.githubusercontent.com 可能会有缓存，但也避免了 API 频繁调用
+                // 这里我们保持用 download_url (也是 raw 链接)
                 const txtRes = await fetch(f.download_url);
                 if(!txtRes.ok) throw new Error('Failed');
                 const text = await txtRes.text();
@@ -282,11 +277,15 @@ async function loadData(){
         renderPosts(ALL_POSTS);
     }catch(err){
         console.error(err);
-        listContainer.innerHTML = `<div class="text-center text-red-500 font-mono text-sm py-10">CONNECTION_REFUSED<br><span class="text-xs opacity-50">Check console logs.</span></div>`;
+        // 如果 API 失败 (Rate Limit)，提示用户
+        let errorMsg = "CONNECTION_REFUSED";
+        if (err.message == 403) errorMsg = "API RATE LIMIT EXCEEDED (Wait 1hr)";
+        
+        listContainer.innerHTML = `<div class="text-center text-red-500 font-mono text-sm py-10">${errorMsg}<br><span class="text-xs opacity-50">Try refreshing later.</span></div>`;
     }
 }
 
-// 简单的网格背景动画 (替换了原来的 Flow 动画)
+// 简单的网格背景
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 let w, h;
@@ -296,7 +295,6 @@ function draw() {
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 0.5;
     const step = 40;
-    // 只画静态网格，节省资源且显得硬核
     for (let x = 0; x <= w; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
     for (let y = 0; y <= h; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
 }
