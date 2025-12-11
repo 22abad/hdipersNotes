@@ -19,9 +19,14 @@
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
         window.runMermaid = async () => { 
+            // The timeout helps ensure the DOM is ready after visibility change
             setTimeout(async () => {
-                await mermaid.run({ querySelector: '.mermaid' });
-            }, 200);
+                // Find only un-rendered mermaid divs to avoid re-rendering
+                const mermaidDivs = document.querySelectorAll('.mermaid:not([data-processed])');
+                if (mermaidDivs.length > 0) {
+                    await mermaid.run({ nodes: mermaidDivs });
+                }
+            }, 100);
         };
     </script>
     
@@ -91,6 +96,10 @@
         document.querySelectorAll('.content-en').forEach(el => el.classList.toggle('hidden', !isEnglish));
         document.querySelectorAll('.content-zh').forEach(el => el.classList.toggle('hidden', isEnglish));
         toggleBtn.textContent = isEnglish ? 'SWITCH TO 中文' : 'SWITCH TO ENGLISH';
+        // 🔥 THIS IS THE FIX: Re-run Mermaid rendering when language changes.
+        if (window.runMermaid) {
+            window.runMermaid();
+        }
     }
     toggleBtn.addEventListener('click', ()=>{ isEnglish = !isEnglish; updateLang(); });
 
@@ -156,7 +165,6 @@
                 tagContainer.innerHTML = tagArray.map(t => `<span class="border border-neutral-700 px-1 rounded">#${t}</span>`).join(' ');
             }
 
-            // --- 🔥 Renderer 配置 🔥 ---
             const renderer = {
                 image(href, title, text) {
                     if (!href) return text;
@@ -174,17 +182,17 @@
                 code(code, infostring) {
                     const lang = (infostring || '').match(/\S*/)[0];
                     if (lang === 'mermaid') {
+                        // Just wrap it, don't process it here. Let the main script handle it.
                         return `<div class="mermaid">${code}</div>`;
                     }
                     const validLang = (window.Prism && Prism.languages[lang]) ? lang : 'plaintext';
-                    return `<pre><code class="language-${validLang}">${code}</code></pre>`;
+                    const highlightedCode = (window.Prism) ? Prism.highlight(code, Prism.languages[validLang], validLang) : code;
+                    return `<pre class="language-${validLang}"><code class="language-${validLang}">${highlightedCode}</code></pre>`;
                 }
             };
 
-            // 1. 注册渲染器
             marked.use({ renderer });
 
-            // 2. 🔥 核心修复：改为 marked.parse() 调用 🔥
             const rawHTML = marked.parse(data.body);
             
             let processedHTML = rawHTML
@@ -193,9 +201,9 @@
 
             document.getElementById('post-body').innerHTML = processedHTML;
             
-            updateLang();
+            updateLang(); // Initial language setup
             if(window.Prism) Prism.highlightAll();
-            if(window.runMermaid) window.runMermaid();
+            if(window.runMermaid) window.runMermaid(); // Initial mermaid run
 
         } catch(e) {
             console.error(e);
