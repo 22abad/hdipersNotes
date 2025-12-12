@@ -15,12 +15,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
     
-    <!-- 还原为最基础的 Mermaid 配置，不搞复杂的骚操作，稳字当头 -->
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
-        window.runMermaid = async () => { 
-            await mermaid.run({ querySelector: '.mermaid' });
+        
+        // 全局重绘函数
+        window.rerenderMermaid = async () => {
+            // 1. 找到所有 mermaid 容器
+            const nodes = document.querySelectorAll('.mermaid');
+            
+            // 2. 还原源代码 (时光倒流)
+            // 如果容器里已经是SVG了，或者画坏了，我们从备份属性 data-original-code 里把源码拿回来
+            nodes.forEach(node => {
+                const originalCode = node.getAttribute('data-original-code');
+                if (originalCode) {
+                    node.removeAttribute('data-processed'); // 撕掉已处理标签
+                    node.innerHTML = originalCode; // 还原文本代码
+                }
+            });
+
+            // 3. 重新渲染
+            // 只有当元素可见时，Mermaid 才能算出正确的宽高
+            try {
+                await mermaid.run({ 
+                    querySelector: '.mermaid',
+                    suppressErrors: true
+                });
+            } catch(e) {
+                console.error("Mermaid Render Error:", e);
+            }
         };
     </script>
     
@@ -44,7 +67,7 @@
         .prose pre code { background: transparent; padding: 0; color: inherit; }
         .prose blockquote { border-left: 4px solid var(--accent); background: rgba(250, 204, 21, 0.05); padding: 1em 1.5em; color: #d4d4d4; font-style: italic; margin: 2em 0; }
         .prose img { border-radius: 8px; border: 1px solid #333; margin: 2rem auto; max-width: 100%; display: block; }
-        .mermaid { background: #171717; padding: 20px; border-radius: 8px; text-align: center; margin: 2rem 0; border: 1px solid #333; display: flex; justify-content: center;}
+        .mermaid { background: #171717; padding: 20px; border-radius: 8px; text-align: center; margin: 2rem 0; border: 1px solid #333; display: flex; justify-content: center; min-height: 50px;}
         .prose table { width: 100%; border-collapse: collapse; margin: 2em 0; }
         .prose th, .prose td { border: 1px solid #333; padding: 0.75em; text-align: left; }
         .prose th { background: #262626; color: var(--accent); }
@@ -84,9 +107,6 @@
     const POSTS_FOLDER = 'posts';
 
     const toggleBtn = document.getElementById('langToggle');
-    
-    // 🔥 修改点 1：从 localStorage 获取之前的语言设置
-    // 如果没有存过，默认是 true (English)
     const storedLang = localStorage.getItem('hdipers_lang');
     let isEnglish = storedLang === null ? true : (storedLang === 'en');
 
@@ -94,17 +114,18 @@
         document.querySelectorAll('.content-en').forEach(el => el.classList.toggle('hidden', !isEnglish));
         document.querySelectorAll('.content-zh').forEach(el => el.classList.toggle('hidden', isEnglish));
         toggleBtn.textContent = isEnglish ? 'SWITCH TO 中文' : 'SWITCH TO ENGLISH';
-        
-        // 存入缓存
         localStorage.setItem('hdipers_lang', isEnglish ? 'en' : 'zh');
+        
+        // 🔥 每次切换，哪怕不刷新，也要强制重新跑一遍渲染流程
+        if (window.rerenderMermaid) {
+            // 加一点点延迟，让 DOM display 属性先生效
+            setTimeout(() => window.rerenderMermaid(), 50);
+        }
     }
 
     toggleBtn.addEventListener('click', () => { 
         isEnglish = !isEnglish; 
         updateLang(); 
-        // 🔥 修改点 2：点击切换后，尝试简单的重绘
-        // 如果图没出来，用户现在可以手动刷新页面，因为状态已经记住了，刷新后就是中文
-        if(window.runMermaid) window.runMermaid();
     });
 
     function getQueryParam(name) { return new URLSearchParams(window.location.search).get(name); }
@@ -172,7 +193,12 @@
                 link(href, title, text) { if (!href) return text; return `<a href="${href}" title="${title || ''}">${text}</a>`; },
                 code(code, infostring) {
                     const lang = (infostring || '').match(/\S*/)[0];
-                    if (lang === 'mermaid') { return `<div class="mermaid">${code}</div>`; }
+                    if (lang === 'mermaid') { 
+                        // 🔥 关键修改：在这里把源代码转义并存入 data-original-code 属性
+                        // 这样我们就有了一个永远不会被 Mermaid 修改的备份！
+                        const safeCode = code.replace(/"/g, '&quot;');
+                        return `<div class="mermaid" data-original-code="${safeCode}">${code}</div>`; 
+                    }
                     const validLang = (window.Prism && Prism.languages[lang]) ? lang : 'plaintext';
                     const highlightedCode = (window.Prism) ? Prism.highlight(code, Prism.languages[validLang], validLang) : code;
                     return `<pre class="language-${validLang}"><code class="language-${validLang}">${highlightedCode}</code></pre>`;
@@ -188,12 +214,12 @@
 
             document.getElementById('post-body').innerHTML = processedHTML;
             
-            // 🔥 修改点 3：先根据记忆设置语言，再渲染图表
-            // 这样如果是中文环境，图表div一开始就是可见的，Mermaid就能正常渲染
             updateLang(); 
             
             if(window.Prism) Prism.highlightAll();
-            if(window.runMermaid) window.runMermaid();
+            
+            // 初次加载
+            if(window.rerenderMermaid) window.rerenderMermaid();
 
         } catch(e) {
             console.error(e);
