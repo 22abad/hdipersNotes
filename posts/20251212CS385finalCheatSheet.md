@@ -182,7 +182,8 @@ const counts = arr.reduce((acc, item) => {
 Good luck, you've got this! Stay calm, read the questions carefully, and double-check your answers. You've prepared, now go ace that exam!
 [END]
 
-[CN]
+
+[ZH]
 
 # 🚀 CS385 Lab Exam 3：终极速查表——包罗万象！
 
