@@ -1,12 +1,13 @@
+
 ---
-title: CS130 Lab Exam 3: The 20-Question Drill (Fixed Version)
-title_en: CS130 Lab Exam 3: The 20-Question Drill (Fixed Version)
-title_zh: CS130 终极题库：20 道分级练习 (术语修正版)
-date: 2025-12-12
+title: CS130 Lab Exam 3: The 20-Question Drill (Universal Symbols)
+title_en: CS130 Lab Exam 3: The 20-Question Drill (Universal Symbols)
+title_zh: CS130 终极题库：20 道分级练习 (符号修复版)
+date: 2025-12-13
 categories: CS130
 tags: SQL, Relational Algebra, ExamPrep, PostgreSQL
-summary_en: An expanded practice set with 20 questions. Includes corrected Relational Algebra definitions (Selection vs Projection) and detailed SQL pitfalls.
-summary_zh: 扩充至 20 道真题模拟。已修正关系代数（选择/投影）的标准术语定义，包含从基础语法到高难度子查询的详细解析。
+summary_en: Practice set with 20 questions. Fixed formatting to use universal Unicode symbols for Relational Algebra (σ, π, ⨝, ρ).
+summary_zh: 20 道真题模拟。已修复符号显示问题，全部采用通用字符 (σ, π, ⨝, ρ)，确保在任何设备上正确显示。
 ---
 
 [EN]
@@ -15,15 +16,17 @@ summary_zh: 扩充至 20 道真题模拟。已修正关系代数（选择/投影
 ### 1. SQL Execution Order
 `FROM` -> `WHERE` -> `GROUP BY` -> `HAVING` -> `SELECT` -> `ORDER BY`
 
-### 2. Relational Algebra (RA) Symbols (CRITICAL!)
-*   **$\sigma$ (Selection):** Filters **ROWS**. Maps to SQL **`WHERE`**.
-*   **$\pi$ (Projection):** Selects **COLUMNS**. Maps to SQL **`SELECT`**.
-*   **$\bowtie$ (Natural Join):** Joins tables on common columns.
-*   **$\rho$ (Rename):** Renames a table or column. Maps to SQL `AS`.
+### 2. Relational Algebra (RA) Symbols
+*(These are the Greek letters you see in the questions)*
 
-> **⚠️ EXAM WARNING:** Do not confuse RA "Selection" ($\sigma$) with SQL `SELECT`.
-> *   RA Selection = Filtering rows (`WHERE`).
-> *   RA Projection = Picking columns (`SELECT`).
+*   **σ (Sigma) = Selection:** Filters **ROWS**. Maps to SQL **`WHERE`**.
+*   **π (Pi) = Projection:** Selects **COLUMNS**. Maps to SQL **`SELECT`**.
+*   **⨝ (Bowtie) = Natural Join:** Joins tables on common columns.
+*   **ρ (Rho) = Rename:** Renames a table or column. Maps to SQL `AS`.
+
+> **⚠️ EXAM WARNING:** Do not confuse RA "Selection" with SQL `SELECT`.
+> *   RA Selection (**σ**) = Filtering rows (`WHERE`).
+> *   RA Projection (**π**) = Picking columns (`SELECT`).
 
 ---
 
@@ -174,7 +177,7 @@ JOIN Course C ON T.cid = C.cid;
 </details>
 
 ### Q10: RA Selection to SQL
-**RA:** $\sigma_{age > 20 \land gender='F'} (Students)$
+**RA:** σ (age > 20 AND gender = 'F') on **Students**
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
 
@@ -183,12 +186,12 @@ SELECT *
 FROM Students
 WHERE age > 20 AND gender = 'F';
 ```
-**Explanation:** $\sigma$ (Selection) means "filter rows", which corresponds to `WHERE`.
+**Explanation:** **σ** (Selection) means "filter rows", which corresponds to `WHERE`.
 
 </details>
 
 ### Q11: RA Projection to SQL
-**RA:** $\pi_{name, id} (Students)$
+**RA:** π (name, id) on **Students**
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
 
@@ -196,7 +199,7 @@ WHERE age > 20 AND gender = 'F';
 SELECT DISTINCT name, id
 FROM Students;
 ```
-**Explanation:** $\pi$ (Projection) means "keep specific columns", which corresponds to SQL `SELECT`. (DISTINCT is implied in strict RA).
+**Explanation:** **π** (Projection) means "keep specific columns", which corresponds to SQL `SELECT`. (DISTINCT is implied in strict RA).
 
 </details>
 
@@ -270,17 +273,17 @@ SELECT name FROM MathClub
 EXCEPT
 SELECT name FROM ScienceClub;
 ```
-**RA Equivalent:** $Math - Science$
+**RA Equivalent:** Math − Science
 
 </details>
 
 ### Q17: Relational Algebra (Cartesian Product)
-**RA:** $R \times S$ (R has N rows, S has M rows).
+**RA:** R × S (R has N rows, S has M rows).
 **Question:** How many rows in result?
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
 
-**Answer:** $N \times M$ rows.
+**Answer:** N × M rows.
 **SQL:** `CROSS JOIN`
 
 </details>
@@ -314,7 +317,7 @@ HAVING COUNT(distinct cid) = (SELECT COUNT(*) FROM Courses);
 </details>
 
 ### Q20: Complex RA to SQL
-**RA:** $\pi_{sname} ( (\sigma_{dept='CS'}(Student)) \bowtie (\rho_{takes}(Enrolled)) )$
+**RA:** π_sname ( σ_dept='CS'(Student) ⨝ ρ_takes(Enrolled) )
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
 
@@ -325,10 +328,10 @@ JOIN Enrolled takes ON S.id = takes.sid
 WHERE S.dept = 'CS';
 ```
 **Explanation:**
-1.  $\rho$ (Rename): `Enrolled` -> `takes`.
-2.  $\bowtie$ (Join): Matches IDs.
-3.  $\sigma$ (Selection): Filters `WHERE dept='CS'`.
-4.  $\pi$ (Projection): Selects `sname`.
+1.  **ρ** (Rename): `Enrolled` -> `takes`.
+2.  **⨝** (Join): Matches IDs.
+3.  **σ** (Selection): Filters `WHERE dept='CS'`.
+4.  **π** (Projection): Selects `sname`.
 
 </details>
 
@@ -340,16 +343,17 @@ WHERE S.dept = 'CS';
 ### 1. SQL 执行顺序
 `FROM` -> `WHERE` -> `GROUP BY` -> `HAVING` -> `SELECT` -> `ORDER BY`
 
-### 2. 关系代数 (RA) 符号 [重点修正]
-*   **$\sigma$ (选择 Selection):** 筛选符合条件的**行 (Tuples)**。对应 SQL 的 **`WHERE`**。
-*   **$\pi$ (投影 Projection):** 提取指定的**列 (Attributes)**。对应 SQL 的 **`SELECT`**。
-*   **$\bowtie$ (自然连接 Natural Join):** 基于同名列合并表。
-*   **$\rho$ (重命名 Rename):** 重命名表或列。对应 SQL 的 `AS`。
+### 2. 关系代数 (RA) 符号
+*(以下符号已改为通用字符，非代码)*
 
-> **⚠️ 考试深坑警告:** 千万别搞混！
-> *   RA 的 "Selection" ($\sigma$) 是在**挑行** (SQL `WHERE`)。
-> *   RA 的 "Projection" ($\pi$) 是在**挑列** (SQL `SELECT`)。
-> *   SQL 的关键字 `SELECT` 实际上在做 RA 的投影操作。
+*   **σ (Sigma / 希腊字母s) = 选择 (Selection):** 筛选符合条件的**行**。对应 SQL 的 **`WHERE`**。
+*   **π (Pi / 希腊字母p) = 投影 (Projection):** 提取指定的**列**。对应 SQL 的 **`SELECT`**。
+*   **⨝ (Bowtie / 领结) = 自然连接 (Natural Join):** 基于同名列合并表。
+*   **ρ (Rho / 希腊字母r) = 重命名 (Rename):** 重命名表或列。对应 SQL 的 `AS`。
+
+> **⚠️ 考试深坑警告:**
+> *   RA 的 **σ** (Selection) 是在**挑行** (SQL `WHERE`)。
+> *   RA 的 **π** (Projection) 是在**挑列** (SQL `SELECT`)。
 
 ---
 
@@ -498,7 +502,7 @@ JOIN Course C ON T.cid = C.cid;
 </details>
 
 ### Q10: RA 选择转 SQL
-**RA:** $\sigma_{age > 20 \land gender='F'} (Students)$
+**RA:** σ (age > 20 AND gender = 'F') 作用于 **Students**
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ 点击揭晓答案</summary>
 
@@ -507,12 +511,12 @@ SELECT *
 FROM Students
 WHERE age > 20 AND gender = 'F';
 ```
-**解析:** $\sigma$ (Selection) 意思是“选择行”，对应 SQL 的 `WHERE` 子句。
+**解析:** **σ** (Selection) 意思是“选择行”，对应 SQL 的 `WHERE` 子句。
 
 </details>
 
 ### Q11: RA 投影转 SQL
-**RA:** $\pi_{name, id} (Students)$
+**RA:** π (name, id) 作用于 **Students**
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ 点击揭晓答案</summary>
 
@@ -520,7 +524,7 @@ WHERE age > 20 AND gender = 'F';
 SELECT DISTINCT name, id
 FROM Students;
 ```
-**解析:** $\pi$ (Projection) 意思是“投影列”，对应 SQL 的 `SELECT`。
+**解析:** **π** (Projection) 意思是“投影列”，对应 SQL 的 `SELECT`。
 
 </details>
 
@@ -594,17 +598,17 @@ SELECT name FROM MathClub
 EXCEPT
 SELECT name FROM ScienceClub;
 ```
-**对应 RA:** $Math - Science$
+**对应 RA:** Math − Science
 
 </details>
 
 ### Q17: 关系代数 (笛卡尔积)
-**RA:** $R \times S$ (假设 R 有 N 行，S 有 M 行)。
+**RA:** R × S (假设 R 有 N 行，S 有 M 行)。
 **问题:** 结果有多少行？
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ 点击揭晓答案</summary>
 
-**答案:** $N \times M$ 行。
+**答案:** N × M 行。
 **SQL:** `CROSS JOIN`
 
 </details>
@@ -638,7 +642,7 @@ HAVING COUNT(distinct cid) = (SELECT COUNT(*) FROM Courses);
 </details>
 
 ### Q20: 复杂 RA 转 SQL
-**RA:** $\pi_{sname} ( (\sigma_{dept='CS'}(Student)) \bowtie (\rho_{takes}(Enrolled)) )$
+**RA:** π_sname ( σ_dept='CS'(Student) ⨝ ρ_takes(Enrolled) )
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ 点击揭晓答案</summary>
 
@@ -649,10 +653,10 @@ JOIN Enrolled takes ON S.id = takes.sid
 WHERE S.dept = 'CS';
 ```
 **解析:**
-1.  $\rho$ (重命名): 将表重命名为 `takes`。
-2.  $\bowtie$ (连接): 匹配 ID。
-3.  $\sigma$ (选择): 对应 `WHERE dept='CS'`。
-4.  $\pi$ (投影): 对应 `SELECT sname`。
+1.  **ρ** (重命名): 将表重命名为 `takes`。
+2.  **⨝** (连接): 匹配 ID。
+3.  **σ** (选择): 对应 `WHERE dept='CS'`。
+4.  **π** (投影): 对应 `SELECT sname`。
 
 </details>
 
