@@ -1,21 +1,29 @@
-
 ---
-title: CS130 Lab Exam 3: The 20-Question Drill (Extended)
-title_en: CS130 Lab Exam 3: The 20-Question Drill (Extended)
-title_zh: CS130 终极题库：20 道分级练习 (含详细解析)
-date: 2025-12-13
+title: CS130 Lab Exam 3: The 20-Question Drill (Fixed Version)
+title_en: CS130 Lab Exam 3: The 20-Question Drill (Fixed Version)
+title_zh: CS130 终极题库：20 道分级练习 (术语修正版)
+date: 2025-12-12
 categories: CS130
 tags: SQL, Relational Algebra, ExamPrep, PostgreSQL
-summary_en: An expanded practice set with 20 questions ranging from basic syntax to complex relational algebra conversions and subquery logic.
-summary_zh: 扩充至 20 道真题模拟。从基础语法到复杂的除法运算、RA转换及高难度子查询，附带详细解题思路。
+summary_en: An expanded practice set with 20 questions. Includes corrected Relational Algebra definitions (Selection vs Projection) and detailed SQL pitfalls.
+summary_zh: 扩充至 20 道真题模拟。已修正关系代数（选择/投影）的标准术语定义，包含从基础语法到高难度子查询的详细解析。
 ---
 
 [EN]
 # 📚 Quick Refresher (The Essentials)
 
-*   **Order of Execution:** `FROM` -> `WHERE` -> `GROUP BY` -> `HAVING` -> `SELECT` -> `ORDER BY`
-*   **Logical Order:** `NOT` -> `AND` -> `OR`
-*   **RA Symbols:** $\sigma$ (Select rows), $\pi$ (Select cols), $\bowtie$ (Join), $\rho$ (Rename).
+### 1. SQL Execution Order
+`FROM` -> `WHERE` -> `GROUP BY` -> `HAVING` -> `SELECT` -> `ORDER BY`
+
+### 2. Relational Algebra (RA) Symbols (CRITICAL!)
+*   **$\sigma$ (Selection):** Filters **ROWS**. Maps to SQL **`WHERE`**.
+*   **$\pi$ (Projection):** Selects **COLUMNS**. Maps to SQL **`SELECT`**.
+*   **$\bowtie$ (Natural Join):** Joins tables on common columns.
+*   **$\rho$ (Rename):** Renames a table or column. Maps to SQL `AS`.
+
+> **⚠️ EXAM WARNING:** Do not confuse RA "Selection" ($\sigma$) with SQL `SELECT`.
+> *   RA Selection = Filtering rows (`WHERE`).
+> *   RA Projection = Picking columns (`SELECT`).
 
 ---
 
@@ -41,7 +49,7 @@ summary_zh: 扩充至 20 道真题模拟。从基础语法到复杂的除法运�
 SELECT DISTINCT city
 FROM Students;
 ```
-**Explanation:** The `DISTINCT` keyword removes duplicate rows from the result set. Without it, you would get 'London' 50 times if 50 students live there.
+**Explanation:** The `DISTINCT` keyword removes duplicate rows from the result set.
 
 </details>
 
@@ -55,7 +63,7 @@ SELECT *
 FROM Students
 WHERE name LIKE 'J%n';
 ```
-**Explanation:** `%` is the wildcard for any sequence of characters. `_` is the wildcard for a single character.
+**Explanation:** `%` is the wildcard for any sequence of characters. `_` is for a single character.
 
 </details>
 
@@ -70,7 +78,7 @@ SELECT name
 FROM Employees
 WHERE manager_id IS NULL;
 ```
-**Explanation:** You cannot use `= NULL` or `!= NULL` in SQL. You must use `IS NULL` or `IS NOT NULL`.
+**Explanation:** Never use `= NULL`. Always use `IS NULL`.
 
 </details>
 
@@ -84,7 +92,7 @@ WHERE manager_id IS NULL;
 SELECT name, monthly_salary * 12 AS annual_salary
 FROM Staff;
 ```
-**Explanation:** You can perform arithmetic (+, -, *, /) directly in the SELECT clause. `AS` renames the output column.
+**Explanation:** Arithmetic operates on the data in the columns. `AS` creates an alias for the output header.
 
 </details>
 
@@ -98,7 +106,6 @@ SELECT *
 FROM Products
 ORDER BY price DESC, name ASC;
 ```
-**Explanation:** You can sort by multiple columns. The second column is used only to break ties in the first column.
 
 </details>
 
@@ -117,7 +124,7 @@ SELECT major, COUNT(*)
 FROM Students
 GROUP BY major;
 ```
-**Explanation:** When using an aggregate function like `COUNT`, any non-aggregated column (like `major`) must be in the `GROUP BY` clause.
+**Explanation:** Any column in `SELECT` that isn't inside an aggregate function (like `COUNT`) must be in `GROUP BY`.
 
 </details>
 
@@ -133,13 +140,12 @@ FROM Employees
 GROUP BY dept_id
 HAVING AVG(salary) > 5000;
 ```
-**Explanation:** `WHERE` filters rows *before* grouping. `HAVING` filters the results *after* grouping (aggregates).
+**Explanation:** `WHERE` filters rows. `HAVING` filters aggregated groups.
 
 </details>
 
 ### Q8: Inner Join (2 Tables)
-**Task:** Find the `student_name` and the `course_name` they are enrolled in.
-*   Tables: `Students` (id, name), `Enrolled` (sid, cid), `Courses` (id, cname) -> *Wait, let's do 2 tables first.*
+**Task:** Find the `employee_name` and their `dept_name`.
 *   Tables: `Employees` (name, dept_id), `Departments` (id, dept_name)
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
@@ -149,7 +155,6 @@ SELECT E.name, D.dept_name
 FROM Employees E
 JOIN Departments D ON E.dept_id = D.id;
 ```
-**Explanation:** `INNER JOIN` (or just `JOIN`) finds matching records in both tables. We use aliases (E, D) to make the code cleaner.
 
 </details>
 
@@ -165,7 +170,6 @@ FROM Student S
 JOIN Takes T ON S.id = T.sid
 JOIN Course C ON T.cid = C.cid;
 ```
-**Explanation:** To link Students to Courses, you must go through the junction table (`Takes`). This requires two JOINs.
 
 </details>
 
@@ -179,7 +183,7 @@ SELECT *
 FROM Students
 WHERE age > 20 AND gender = 'F';
 ```
-**Explanation:** $\sigma$ (Sigma) maps directly to the `WHERE` clause. $\land$ is logical AND.
+**Explanation:** $\sigma$ (Selection) means "filter rows", which corresponds to `WHERE`.
 
 </details>
 
@@ -189,10 +193,10 @@ WHERE age > 20 AND gender = 'F';
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
 
 ```sql
-SELECT distinct name, id
+SELECT DISTINCT name, id
 FROM Students;
 ```
-**Explanation:** Strictly speaking, Relational Algebra is a set (no duplicates). So $\pi$ usually implies `SELECT DISTINCT`. In CS130, standard `SELECT` is often accepted unless specified otherwise.
+**Explanation:** $\pi$ (Projection) means "keep specific columns", which corresponds to SQL `SELECT`. (DISTINCT is implied in strict RA).
 
 </details>
 
@@ -208,7 +212,6 @@ FROM Customers C
 LEFT JOIN Orders O ON C.id = O.cust_id
 WHERE O.ord_id IS NULL;
 ```
-**Explanation:** `LEFT JOIN` keeps all customers. If there is no matching order, `O.ord_id` becomes NULL. The `WHERE` clause catches these NULLs.
 
 </details>
 
@@ -221,7 +224,6 @@ WHERE O.ord_id IS NULL;
 INSERT INTO Students (id, name, department)
 VALUES (101, 'Alice', 'CS');
 ```
-**Explanation:** Always specify column names before `VALUES` to be safe, especially if the table structure changes later.
 
 </details>
 
@@ -239,7 +241,6 @@ SELECT name, salary
 FROM Employees
 WHERE salary > (SELECT AVG(salary) FROM Employees);
 ```
-**Explanation:** You cannot put `AVG(salary)` directly in a WHERE clause. You must calculate it in a subquery first.
 
 </details>
 
@@ -256,41 +257,31 @@ WHERE EXISTS (
     WHERE E.cid = C.cid
 );
 ```
-**Explanation:** A correlated subquery runs once for *each row* of the outer query. It checks if the relationship holds true.
 
 </details>
 
 ### Q16: Set Operations (Difference)
-**Task:** Find student names who are in the 'Math' club but **NOT** in the 'Science' club.
-*   Assumes two queries or tables.
+**Task:** Find students in 'Math' club but **NOT** in 'Science' club.
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
 
 ```sql
--- Option 1: EXCEPT (Standard SQL)
 SELECT name FROM MathClub
 EXCEPT
 SELECT name FROM ScienceClub;
-
--- Option 2: NOT IN
-SELECT name FROM MathClub
-WHERE name NOT IN (SELECT name FROM ScienceClub);
 ```
-**Explanation:** `EXCEPT` (or `MINUS` in Oracle) performs set difference ($\text{Math} - \text{Science}$).
+**RA Equivalent:** $Math - Science$
 
 </details>
 
 ### Q17: Relational Algebra (Cartesian Product)
-**RA:** $R \times S$ (or $R \times S$ where R has N rows, S has M rows).
-**Question:** How many rows are in the result?
+**RA:** $R \times S$ (R has N rows, S has M rows).
+**Question:** How many rows in result?
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
 
 **Answer:** $N \times M$ rows.
-
-**SQL:** `SELECT * FROM R, S;` or `SELECT * FROM R CROSS JOIN S;`
-
-**Explanation:** A Cartesian product pairs every single row of R with every single row of S. If R has 10 rows and S has 5, the result is 50 rows.
+**SQL:** `CROSS JOIN`
 
 </details>
 
@@ -303,26 +294,22 @@ WHERE name NOT IN (SELECT name FROM ScienceClub);
 SELECT A.name, B.name
 FROM Employees A
 JOIN Employees B ON A.dept_id = B.dept_id
-WHERE A.id != B.id; -- or A.id < B.id to avoid duplicates
+WHERE A.id != B.id;
 ```
-**Explanation:** You join the table to itself using two aliases (A and B). The `WHERE` clause prevents matching an employee to themselves.
 
 </details>
 
 ### Q19: The "Division" Problem (Universal Quantifier)
 **Task:** Find students who have taken **ALL** courses available in the catalog.
-*   (This is the hardest type of question).
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ Show Answer</summary>
 
-**Approach 1: Counting**
 ```sql
 SELECT sid
 FROM Takes
 GROUP BY sid
 HAVING COUNT(distinct cid) = (SELECT COUNT(*) FROM Courses);
 ```
-**Explanation:** If a student has taken 5 unique courses, and the total number of courses in the catalog is 5, then they have taken everything.
 
 </details>
 
@@ -338,9 +325,10 @@ JOIN Enrolled takes ON S.id = takes.sid
 WHERE S.dept = 'CS';
 ```
 **Explanation:**
-1.  $\rho_{takes}$ renames the Enrolled table to `takes`.
-2.  $\bowtie$ is the Natural Join (implied join on matching IDs).
-3.  $\sigma$ filters for CS department.
+1.  $\rho$ (Rename): `Enrolled` -> `takes`.
+2.  $\bowtie$ (Join): Matches IDs.
+3.  $\sigma$ (Selection): Filters `WHERE dept='CS'`.
+4.  $\pi$ (Projection): Selects `sname`.
 
 </details>
 
@@ -349,9 +337,19 @@ WHERE S.dept = 'CS';
 [ZH]
 # 📚 考前速览 (核心要点)
 
-*   **执行顺序:** `FROM` -> `WHERE` -> `GROUP BY` -> `HAVING` -> `SELECT` -> `ORDER BY`
-*   **逻辑优先级:** `NOT` -> `AND` -> `OR`
-*   **RA 符号:** $\sigma$ (选行), $\pi$ (选列), $\bowtie$ (连接), $\rho$ (重命名).
+### 1. SQL 执行顺序
+`FROM` -> `WHERE` -> `GROUP BY` -> `HAVING` -> `SELECT` -> `ORDER BY`
+
+### 2. 关系代数 (RA) 符号 [重点修正]
+*   **$\sigma$ (选择 Selection):** 筛选符合条件的**行 (Tuples)**。对应 SQL 的 **`WHERE`**。
+*   **$\pi$ (投影 Projection):** 提取指定的**列 (Attributes)**。对应 SQL 的 **`SELECT`**。
+*   **$\bowtie$ (自然连接 Natural Join):** 基于同名列合并表。
+*   **$\rho$ (重命名 Rename):** 重命名表或列。对应 SQL 的 `AS`。
+
+> **⚠️ 考试深坑警告:** 千万别搞混！
+> *   RA 的 "Selection" ($\sigma$) 是在**挑行** (SQL `WHERE`)。
+> *   RA 的 "Projection" ($\pi$) 是在**挑列** (SQL `SELECT`)。
+> *   SQL 的关键字 `SELECT` 实际上在做 RA 的投影操作。
 
 ---
 
@@ -377,7 +375,7 @@ WHERE S.dept = 'CS';
 SELECT DISTINCT city
 FROM Students;
 ```
-**解析:** `DISTINCT` 关键字用于去除重复行。如果不加，如果有 50 个学生住在伦敦，你会看到 50 次 'London'。
+**解析:** `DISTINCT` 关键字用于去除重复行。
 
 </details>
 
@@ -406,7 +404,7 @@ SELECT name
 FROM Employees
 WHERE manager_id IS NULL;
 ```
-**解析:** 在 SQL 中不能用 `= NULL` 或 `!= NULL`。必须使用 `IS NULL` 或 `IS NOT NULL`。
+**解析:** 在 SQL 中不能用 `= NULL` 或 `!= NULL`。必须使用 `IS NULL`。
 
 </details>
 
@@ -420,7 +418,7 @@ WHERE manager_id IS NULL;
 SELECT name, monthly_salary * 12 AS annual_salary
 FROM Staff;
 ```
-**解析:** 你可以在 SELECT 子句中直接进行四则运算。`AS` 用于给结果列起别名。
+**解析:** `AS` 用于给计算出的结果列起别名。
 
 </details>
 
@@ -434,7 +432,6 @@ SELECT *
 FROM Products
 ORDER BY price DESC, name ASC;
 ```
-**解析:** `ORDER BY` 可以接受多个列。第二个列仅在第一个列数值相同时用于打破平局。
 
 </details>
 
@@ -452,7 +449,7 @@ SELECT major, COUNT(*)
 FROM Students
 GROUP BY major;
 ```
-**解析:** 当使用聚合函数 (如 COUNT) 时，任何未被聚合的普通列 (如 major) 都必须出现在 `GROUP BY` 子句中。
+**解析:** 任何出现在 SELECT 中但没有被聚合函数包裹的列，必须出现在 `GROUP BY` 中。
 
 </details>
 
@@ -467,7 +464,7 @@ FROM Employees
 GROUP BY dept_id
 HAVING AVG(salary) > 5000;
 ```
-**解析:** `WHERE` 在分组**前**过滤行。`HAVING` 在分组**后**过滤结果（聚合值）。
+**解析:** `WHERE` 过滤原始行，`HAVING` 过滤聚合后的组数据。
 
 </details>
 
@@ -482,7 +479,6 @@ SELECT E.name, D.dept_name
 FROM Employees E
 JOIN Departments D ON E.dept_id = D.id;
 ```
-**解析:** `INNER JOIN` (或简写为 JOIN) 只找出两张表中都有匹配的记录。使用别名 (E, D) 可以让代码更清晰。
 
 </details>
 
@@ -498,7 +494,6 @@ FROM Student S
 JOIN Takes T ON S.id = T.sid
 JOIN Course C ON T.cid = C.cid;
 ```
-**解析:** 多对多关系通常通过中间表 (`Takes`) 连接。需要做两次 JOIN 才能把学生和课程关联起来。
 
 </details>
 
@@ -512,7 +507,7 @@ SELECT *
 FROM Students
 WHERE age > 20 AND gender = 'F';
 ```
-**解析:** $\sigma$ (Sigma) 直接对应 `WHERE` 子句。$\land$ 对应逻辑与 `AND`。
+**解析:** $\sigma$ (Selection) 意思是“选择行”，对应 SQL 的 `WHERE` 子句。
 
 </details>
 
@@ -522,10 +517,10 @@ WHERE age > 20 AND gender = 'F';
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ 点击揭晓答案</summary>
 
 ```sql
-SELECT distinct name, id
+SELECT DISTINCT name, id
 FROM Students;
 ```
-**解析:** 严格来说，关系代数是集合（不允许重复），所以 $\pi$ 通常暗示 `SELECT DISTINCT`。但在 CS130 中，除非特别说明，写普通 `SELECT` 也可以。
+**解析:** $\pi$ (Projection) 意思是“投影列”，对应 SQL 的 `SELECT`。
 
 </details>
 
@@ -541,7 +536,6 @@ FROM Customers C
 LEFT JOIN Orders O ON C.id = O.cust_id
 WHERE O.ord_id IS NULL;
 ```
-**解析:** `LEFT JOIN` 保留所有客户。如果没有匹配的订单，`O.ord_id` 会变成 NULL。`WHERE` 子句专门抓出这些 NULL 行。
 
 </details>
 
@@ -554,7 +548,6 @@ WHERE O.ord_id IS NULL;
 INSERT INTO Students (id, name, department)
 VALUES (101, 'Alice', 'CS');
 ```
-**解析:** 养成好习惯：在 `VALUES` 前明确列出列名，防止表结构变化导致插入错误。
 
 </details>
 
@@ -572,7 +565,6 @@ SELECT name, salary
 FROM Employees
 WHERE salary > (SELECT AVG(salary) FROM Employees);
 ```
-**解析:** 你不能在 WHERE 子句里直接写 `AVG(salary)`。必须先在一个子查询里把它算出来。
 
 </details>
 
@@ -589,7 +581,6 @@ WHERE EXISTS (
     WHERE E.cid = C.cid
 );
 ```
-**解析:** 相关子查询会为外层查询的**每一行**执行一次。它检查 `E.cid = C.cid` 这个关系是否存在。
 
 </details>
 
@@ -599,16 +590,11 @@ WHERE EXISTS (
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ 点击揭晓答案</summary>
 
 ```sql
--- 写法 1: EXCEPT (标准 SQL)
 SELECT name FROM MathClub
 EXCEPT
 SELECT name FROM ScienceClub;
-
--- 写法 2: NOT IN
-SELECT name FROM MathClub
-WHERE name NOT IN (SELECT name FROM ScienceClub);
 ```
-**解析:** `EXCEPT` (在 Oracle 里叫 MINUS) 执行集合差运算 ($\text{Math} - \text{Science}$)。
+**对应 RA:** $Math - Science$
 
 </details>
 
@@ -619,10 +605,7 @@ WHERE name NOT IN (SELECT name FROM ScienceClub);
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ 点击揭晓答案</summary>
 
 **答案:** $N \times M$ 行。
-
-**SQL:** `SELECT * FROM R, S;` 或 `SELECT * FROM R CROSS JOIN S;`
-
-**解析:** 笛卡尔积会将 R 的每一行与 S 的每一行配对。如果 R 有 10 行，S 有 5 行，结果就是 50 行。
+**SQL:** `CROSS JOIN`
 
 </details>
 
@@ -635,26 +618,22 @@ WHERE name NOT IN (SELECT name FROM ScienceClub);
 SELECT A.name, B.name
 FROM Employees A
 JOIN Employees B ON A.dept_id = B.dept_id
-WHERE A.id != B.id; -- 或者 A.id < B.id 来避免 (Bob, Tom) 和 (Tom, Bob) 重复
+WHERE A.id != B.id;
 ```
-**解析:** 将表与自身连接需要两个别名 (A 和 B)。`WHERE` 子句用于排除自己匹配自己的情况。
 
 </details>
 
 ### Q19: "除法" 问题 (全称量词)
 **任务:** 找出选修了目录中**所有**课程的学生。
-*   (这是最难的题型之一)。
 
 <details> <summary style="cursor: pointer; color: #facc15; font-weight: bold;">▼ 点击揭晓答案</summary>
 
-**解法: 计数比较法**
 ```sql
 SELECT sid
 FROM Takes
 GROUP BY sid
 HAVING COUNT(distinct cid) = (SELECT COUNT(*) FROM Courses);
 ```
-**解析:** 如果一个学生选修的不重复课程数量等于课程表里的总课程数，那他肯定全选了。
 
 </details>
 
@@ -670,9 +649,10 @@ JOIN Enrolled takes ON S.id = takes.sid
 WHERE S.dept = 'CS';
 ```
 **解析:**
-1.  $\rho_{takes}$ 将 Enrolled 表重命名为 `takes`。
-2.  $\bowtie$ 是自然连接 (隐含了 ID 相等的条件)。
-3.  $\sigma$ 筛选 CS 系的学生。
+1.  $\rho$ (重命名): 将表重命名为 `takes`。
+2.  $\bowtie$ (连接): 匹配 ID。
+3.  $\sigma$ (选择): 对应 `WHERE dept='CS'`。
+4.  $\pi$ (投影): 对应 `SELECT sname`。
 
 </details>
 
