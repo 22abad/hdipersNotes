@@ -12,7 +12,7 @@ summary_zh: CS130 实验考试 3 的终极备考指南与小抄。涵盖核心 S
 
 
 [EN]
-![CS130 SQL Exam Header Image](images/20251212_CS130_Lab_Exam3_Cheatsheet.png.png)
+![CS130 SQL Exam Header Image](images/20251212_CS130_Lab_Exam3_Cheatsheet.png)
 # 1. Exam Strategy & Overview
 
 This is an **OPEN BOOK** exam, but with strict limitations. Focus on using your own notes, past labs, and the official PostgreSQL documentation. **Do not use AI tools or communicate with others.**
@@ -341,7 +341,7 @@ WHERE customer_id NOT IN (
 [ZH]
 
 # 1. 考试策略与概览
-![CS130 SQL Exam Header Image](images/20251212_CS130_Lab_Exam3_Cheatsheet.png.png)
+![CS130 SQL Exam Header Image](images/20251212_CS130_Lab_Exam3_Cheatsheet.png)
 这是一场**开卷**考试，但有严格的限制。请专注于使用你自己的笔记、过去的实验和 PostgreSQL 官方文档。**禁止使用 AI 工具或与他人交流。**
 
 - **时长**: 90 分钟
