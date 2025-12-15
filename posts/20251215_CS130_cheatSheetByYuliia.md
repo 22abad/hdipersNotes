@@ -16,35 +16,35 @@ summary_zh: 包含常见错误、正则表达式、关系代数和事务块等�
 
 | Item | Details |
 | :--- | :--- |
-| **Duration** | [cite_start]90 minutes [cite: 420] |
-| **Questions** | [cite_start]12 SQL queries [cite: 420] |
-| **Attempts** | [cite_start]2 (feedback after first attempt) [cite: 420] |
-| **⚠️ IMPORTANT** | [cite_start]Answer questions **IN ORDER** (deletes/updates are sequential) [cite: 420] |
+| **Duration** |90 minutes |
+| **Questions** |12 SQL queries |
+| **Attempts** |2 (feedback after first attempt) |
+| **⚠️ IMPORTANT** |Answer questions **IN ORDER** (deletes/updates are sequential) |
 
 ---
 
 # 1. SELECT Statements
 
 ### Basic & Filtering
-* [cite_start]**Basic:** `SELECT column1, column2 FROM TableName;` [cite: 423]
-* [cite_start]**Distinct:** `SELECT DISTINCT column FROM TableName;` [cite: 424]
-* [cite_start]**Where:** `WHERE column > 100` [cite: 429]
-* [cite_start]**Between:** `WHERE column BETWEEN 10 AND 50` [cite: 430]
-* [cite_start]**In List:** `WHERE column IN ('val1', 'val2')` [cite: 431]
-* [cite_start]**Nulls:** `WHERE column IS NULL` or `IS NOT NULL` [cite: 432, 433]
+***Basic:** `SELECT column1, column2 FROM TableName;` 
+***Distinct:** `SELECT DISTINCT column FROM TableName;` 
+***Where:** `WHERE column > 100` 
+***Between:** `WHERE column BETWEEN 10 AND 50` 
+***In List:** `WHERE column IN ('val1', 'val2')` 
+***Nulls:** `WHERE column IS NULL` or `IS NOT NULL`  
 
 ### Multiple Conditions
-* [cite_start]`WHERE (condition1) AND (condition2);` [cite: 435]
-* [cite_start]`WHERE (condition1) OR (condition2);` [cite: 435]
+*`WHERE (condition1) AND (condition2);`  
+*`WHERE (condition1) OR (condition2);`  
 
 ### Pattern Matching
-* [cite_start]**LIKE:** `'pattern%'` (starts with) or `'%pattern%'` (contains) [cite: 437]
-* [cite_start]**Regex:** `~* '^pattern.*$'` [cite: 438]
+***LIKE:** `'pattern%'` (starts with) or `'%pattern%'` (contains)  
+***Regex:** `~* '^pattern.*$'`  
 
 ### Ordering
-* [cite_start]`ORDER BY column ASC;` (Ascending) [cite: 440]
-* [cite_start]`ORDER BY column DESC;` (Descending) [cite: 440]
-* [cite_start]`LIMIT 10;` [cite: 440]
+*`ORDER BY column ASC;` (Ascending)  
+*`ORDER BY column DESC;` (Descending)  
+*`LIMIT 10;`  
 
 ---
 
@@ -202,39 +202,39 @@ CREATE TABLE TableName (
 # 11. Operators Reference
 | Operator | Meaning | Example |
 | --- | --- | --- |
-| `=` | Equals | <br>`WHERE col = 'value'` |
-| `<>` or `!=` | Not equals | <br>`WHERE col <> 'value'` |
-| `BETWEEN` | Range (inclusive!) | <br>`WHERE price BETWEEN 10 AND 50` |
-| `IN` | In list | <br>`WHERE col IN ('A', 'B')` |
-| `IS NULL` | Is null | <br>`WHERE col IS NULL` |
-| `LIKE` | Pattern match | <br>`WHERE col LIKE '%text%'` |
-| `~*` | Regex (case-insensitive) | <br>`WHERE col ~* 'pattern'` |
+| `=` | Equals | `WHERE col = 'value'` |
+| `<>` or `!=` | Not equals | `WHERE col <> 'value'` |
+| `BETWEEN` | Range (inclusive!) | `WHERE price BETWEEN 10 AND 50` |
+| `IN` | In list | `WHERE col IN ('A', 'B')` |
+| `IS NULL` | Is null | `WHERE col IS NULL` |
+| `LIKE` | Pattern match | `WHERE col LIKE '%text%'` |
+| `~*` | Regex (case-insensitive) | `WHERE col ~* 'pattern'` |
 
 ---
 
 # 12. Regex Patterns (PostgreSQL)
 | Pattern | Meaning | Example |
 | --- | --- | --- |
-| `^` | Start of string | <br>`^A` (Starts with A) |
-| `$` | End of string | <br>`Road$` (Ends with Road) |
-| `*` | 0 or more chars | <br>`.*` (Anything) |
-| `+` | 1 or more chars | <br>`.+` (Something) |
-| `\d` | Any digit | <br>`\d` |
-| `\d{4,}` | 4 or more digits | <br>`\d{4,}` |
-| `(A｜B)` | A or B |<br>`A｜B` |
+| `^` | Start of string | `^A` (Starts with A) |
+| `$` | End of string | `Road$` (Ends with Road) |
+| `*` | 0 or more chars | `.*` (Anything) |
+| `+` | 1 or more chars | `.+` (Something) |
+| `\d` | Any digit | `\d` |
+| `\d{4,}` | 4 or more digits | `\d{4,}` |
+| `(A｜B)` | A or B |`A｜B` |
 
 ---
 
 # 13. Relational Algebra
 | Symbol | Name | SQL Equivalent |
 | --- | --- | --- |
-| **σ** (sigma) | Selection | <br>`WHERE` |
-| **π** (pi) | Projection | <br>`SELECT columns` |
-| **X** | Cartesian Product | <br>`FROM T1, T2` (no join condition) |
-| **⨝** | Natural Join | <br>`WHERE T1.key = T2.key` |
-| **U** | Union | <br>`UNION` |
-| **^** | AND | <br>`AND` |
-| **V** | OR | <br>`OR` |
+| **σ** (sigma) | Selection | `WHERE` |
+| **π** (pi) | Projection | `SELECT columns` |
+| **X** | Cartesian Product | `FROM T1, T2` (no join condition) |
+| **⨝** | Natural Join | `WHERE T1.key = T2.key` |
+| **U** | Union | `UNION` |
+| **^** | AND | `AND` |
+| **V** | OR | `OR` |
 
 ---
 
@@ -293,7 +293,7 @@ CREATE TABLE TableName (
 | **时长** | 90 分钟  |
 | **题量** | 12 道 SQL 查询题  |
 | **尝试次数** | 2 次 (第一次尝试后会有反馈) |
-| **⚠️ 重要** | <br>**按顺序**答题 (删除/更新操作是连贯的)  |
+| **⚠️ 重要** | **按顺序**答题 (删除/更新操作是连贯的)  |
 
 ---
 
@@ -501,39 +501,39 @@ CREATE TABLE TableName (
 # 11. 运算符参考
 | 运算符 | 含义 | 例子 |
 | --- | --- | --- |
-| `=` | 等于 | <br>`WHERE col = 'value'` |
-| `<>` or `!=` | 不等于 | <br>`WHERE col <> 'value'` |
-| `BETWEEN` | 范围 (包含!) | <br>`WHERE price BETWEEN 10 AND 50` |
-| `IN` | 在列表中 | <br>`WHERE col IN ('A', 'B')` |
-| `IS NULL` | 为空 | <br>`WHERE col IS NULL` |
-| `LIKE` | 模式匹配 | <br>`WHERE col LIKE '%text%'` |
-| `~*` | 正则 (不区分大小写) | <br>`WHERE col ~* 'pattern'` |
+| `=` | 等于 | `WHERE col = 'value'` |
+| `<>` or `!=` | 不等于 | `WHERE col <> 'value'` |
+| `BETWEEN` | 范围 (包含!) | `WHERE price BETWEEN 10 AND 50` |
+| `IN` | 在列表中 | `WHERE col IN ('A', 'B')` |
+| `IS NULL` | 为空 | `WHERE col IS NULL` |
+| `LIKE` | 模式匹配 | `WHERE col LIKE '%text%'` |
+| `~*` | 正则 (不区分大小写) | `WHERE col ~* 'pattern'` |
 
 ---
 
 # 12. 正则表达式模式 (PostgreSQL)
 | 模式 | 含义 | 例子 |
 | --- | --- | --- |
-| `^` | 字符串开头 | <br>`^A` (以 A 开头) |
-| `$` | 字符串结尾 | <br>`Road$` (以 Road 结尾) |
-| `*` | 0 或更多字符 | <br>`.*` (任意) |
-| `+` | 1 或更多字符 | <br>`.+` (至少一个) |
-| `\d` | 任意数字 | <br>`\d` |
-| `\d{4,}` | 4个或更多数字 | <br>`\d{4,}` |
-| `(A｜B)` | A 或 B | <br>`\d{4,}` |
+| `^` | 字符串开头 | `^A` (以 A 开头) |
+| `$` | 字符串结尾 | `Road$` (以 Road 结尾) |
+| `*` | 0 或更多字符 | `.*` (任意) |
+| `+` | 1 或更多字符 | `.+` (至少一个) |
+| `\d` | 任意数字 | `\d` |
+| `\d{4,}` | 4个或更多数字 | `\d{4,}` |
+| `(A｜B)` | A 或 B | `\d{4,}` |
 
 ---
 
 # 13. 关系代数 (Relational Algebra)
 | 符号 | 名称 | SQL 等价 |
 | --- | --- | --- |
-| **σ** (sigma) | 选择 | <br>`WHERE` |
-| **π** (pi) | 投影 | <br>`SELECT columns` |
-| **X** | 笛卡尔积 | <br>`FROM T1, T2` (无连接条件) |
-| **⨝** | 自然连接 | <br>`WHERE T1.key = T2.key` |
-| **U** | 并集 | <br>`UNION` |
-| **^** | AND | <br>`AND` |
-| **V** | OR | <br>`OR` |
+| **σ** (sigma) | 选择 | `WHERE` |
+| **π** (pi) | 投影 | `SELECT columns` |
+| **X** | 笛卡尔积 | `FROM T1, T2` (无连接条件) |
+| **⨝** | 自然连接 | `WHERE T1.key = T2.key` |
+| **U** | 并集 | `UNION` |
+| **^** | AND | `AND` |
+| **V** | OR | `OR` |
 
 ---
 
