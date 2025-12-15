@@ -380,7 +380,7 @@ UPDATE TableName SET col1 = 'val1', col2 = 'val2' WHERE condition;
 ---
 
 # 4. JOIN Queries (连接查询)
-###方法 1: 逗号 + WHERE (实验室常用)
+### 方法 1: 逗号 + WHERE (实验室常用)
 ```sql
 SELECT T1.col, T2.col
 FROM Table1 AS T1, Table2 AS T2
@@ -390,7 +390,7 @@ WHERE (T1.key = T2.key) AND (过滤条件);
 
 
 
-###方法 2: JOIN ... ON
+### 方法 2: JOIN ... ON
 ```sql
 SELECT T1.col, T2.col
 FROM Table1 AS T1
