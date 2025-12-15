@@ -58,7 +58,7 @@ UPDATE TableName SET col1 = 'val1', col2 = 'val2' WHERE condition;
 
 
 
-###Percentage Calculations
+### Percentage Calculations
 * **Decrease by 8%:** `SET price = price * 0.92` 
 
 
@@ -91,7 +91,7 @@ WHERE (T1.key = T2.key) AND (filters);
 
 
 
-###Method 2: JOIN ... ON
+### Method 2: JOIN ... ON
 ```sql
 SELECT T1.col, T2.col
 FROM Table1 AS T1
@@ -221,12 +221,12 @@ CREATE TABLE TableName (
 | `+` | 1 or more chars | <br>`.+` (Something) |
 | `\d` | Any digit | <br>`\d` |
 | `\d{4,}` | 4 or more digits | <br>`\d{4,}` |
-| `(A |B)` | A or B |<br>`A｜B` |
+| `(A ｜B)` | A or B |<br>`A｜B` |
 
 ---
 
-# 13. Relational Algebra| Symbol 
-| Name | SQL Equivalent |
+# 13. Relational Algebra
+| Symbol | Name | SQL Equivalent |
 | --- | --- | --- |
 | **σ** (sigma) | Selection | <br>`WHERE` |
 | **π** (pi) | Projection | <br>`SELECT columns` |
@@ -346,7 +346,8 @@ CREATE TABLE TableName (
 
 ---
 
-# 2. UPDATE 语句 (更新)###语法
+# 2. UPDATE 语句 (更新)
+###语法
 ```sql
 UPDATE TableName SET col1 = 'val1', col2 = 'val2' WHERE condition;
 
@@ -377,7 +378,8 @@ UPDATE TableName SET col1 = 'val1', col2 = 'val2' WHERE condition;
 
 ---
 
-# 4. JOIN Queries (连接查询)###方法 1: 逗号 + WHERE (实验室常用)
+# 4. JOIN Queries (连接查询)
+###方法 1: 逗号 + WHERE (实验室常用)
 ```sql
 SELECT T1.col, T2.col
 FROM Table1 AS T1, Table2 AS T2
@@ -517,7 +519,7 @@ CREATE TABLE TableName (
 | `+` | 1 或更多字符 | <br>`.+` (至少一个) |
 | `\d` | 任意数字 | <br>`\d` |
 | `\d{4,}` | 4个或更多数字 | <br>`\d{4,}` |
-| `(A | B)` | A 或 B | <br>`\d{4,}` |
+| `(A｜B)` | A 或 B | <br>`\d{4,}` |
 
 ---
 
