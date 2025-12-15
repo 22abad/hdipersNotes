@@ -59,29 +59,23 @@ UPDATE TableName SET col1 = 'val1', col2 = 'val2' WHERE condition;
 
 
 ###Percentage Calculations
-* 
-**Decrease by 8%:** `SET price = price * 0.92` 
+* **Decrease by 8%:** `SET price = price * 0.92` 
 
 
-* 
-**Increase by 10%:** `SET price = price * 1.10` 
+* **Increase by 10%:** `SET price = price * 1.10` 
 
 
 
 ---
 
 # 3. DELETE Statements
-* 
-
-**Standard:** `DELETE FROM TableName WHERE condition;` 
+* **Standard:** `DELETE FROM TableName WHERE condition;` 
 
 
-* 
-**Null Check:** `DELETE FROM TableName WHERE column IS NULL;` 
+* **Null Check:** `DELETE FROM TableName WHERE column IS NULL;` 
 
 
-* 
-**List Check:** `DELETE FROM TableName WHERE column IN ('val1', 'val2');` 
+* **List Check:** `DELETE FROM TableName WHERE column IN ('val1', 'val2');` 
 
 
 
@@ -116,28 +110,23 @@ WHERE filters;
 ---
 
 # 5. Aggregate Functions
-* 
-**Count Rows:** `SELECT COUNT(*) FROM TableName;` 
+* **Count Rows:** `SELECT COUNT(*) FROM TableName;` 
 
 
-* 
-**Average (Rounded):** `SELECT ROUND(AVG(column), 2) ...` 
+* **Average (Rounded):** `SELECT ROUND(AVG(column), 2) ...` 
 
 
-* 
-**Sum:** `SELECT SUM(column) ...` 
+* **Sum:** `SELECT SUM(column) ...` 
 
 
-* 
-**Group By:** `SELECT column, COUNT(*) FROM TableName GROUP BY column;` 
+* **Group By:** `SELECT column, COUNT(*) FROM TableName GROUP BY column;` 
 
 
 
 ---
 
 # 6. CASCADE Effects (CRITICAL!)
-* 
-**Rule:** When deleting/updating, count rows in **BOTH** main table **AND** related tables. 
+* **Rule:** When deleting/updating, count rows in **BOTH** main table **AND** related tables. 
 
 
 * **Strategy:** Use `UNION` to add counts together.
@@ -152,8 +141,7 @@ SELECT COUNT(*) FROM RelatedTable ...;
 
 
 
-* 
-**Math:** Result 1 + Result 2 = **TOTAL rows affected**. 
+* **Math:** Result 1 + Result 2 = **TOTAL rows affected**. 
 
 
 
@@ -182,36 +170,30 @@ CREATE TABLE TableName (
 ---
 
 # 8. ALTER TABLE
-* 
-**Add Column:** `ALTER TABLE TableName ADD COLUMN columnname DATATYPE;` 
+* **Add Column:** `ALTER TABLE TableName ADD COLUMN columnname DATATYPE;` 
 
 
 
 ---
 
 # 9. INSERT Statements
-* 
-**Syntax:** `INSERT INTO TableName (col1, col2) VALUES ('val1', 'val2');` 
+* **Syntax:** `INSERT INTO TableName (col1, col2) VALUES ('val1', 'val2');` 
 
 
 
 ---
 
 # 10. Transaction Blocks
-* 
-**Start:** `BEGIN;` 
+* **Start:** `BEGIN;` 
 
 
-* 
-**Save:** `COMMIT;` 
+* **Save:** `COMMIT;` 
 
 
-* 
-**Undo:** `ROLLBACK;` 
+* **Undo:** `ROLLBACK;` 
 
 
-* 
-**Testing Strategy:** Run `BEGIN`, check data, run `DELETE`, check data again, then `ROLLBACK` to undo if testing. 
+* **Testing Strategy:** Run `BEGIN`, check data, run `DELETE`, check data again, then `ROLLBACK` to undo if testing. 
 
 
 
@@ -239,7 +221,7 @@ CREATE TABLE TableName (
 | `+` | 1 or more chars | <br>`.+` (Something) |
 | `\d` | Any digit | <br>`\d` |
 | `\d{4,}` | 4 or more digits | <br>`\d{4,}` |
-| `(A | B)` | A or B |
+| `(A |B)` | A or B |<br>`A｜B` |
 
 ---
 
@@ -257,15 +239,13 @@ CREATE TABLE TableName (
 ---
 
 # 14. Tricky Queries - Common Mistakes
-1. 
-**Forgetting Join Conditions:** N tables need **N-1** joins. 
+1. **Forgetting Join Conditions:** N tables need **N-1** joins. 
 
 
 2. **NULL Comparisons:** Never use `= NULL`. Must use `IS NULL`. 
 
 
-3. 
-**BETWEEN:** It is **inclusive** (includes both 10 and 50). 
+3. **BETWEEN:** It is **inclusive** (includes both 10 and 50). 
 
 
 4. **Percentage Math:** Decrease by 8% is `* 0.92`. `* 0.08` is WRONG. 
@@ -310,78 +290,57 @@ CREATE TABLE TableName (
 #📚 考试信息
 | 项目 | 详情 |
 | --- | --- |
-| **时长** | 90 分钟 
-
- |
-| **题量** | 12 道 SQL 查询题 
-
- |
-| **尝试次数** | 2 次 (第一次尝试后会有反馈) 
-
- |
-| **⚠️ 重要** | <br>**按顺序**答题 (删除/更新操作是连贯的) 
-
- |
+| **时长** | 90 分钟  |
+| **题量** | 12 道 SQL 查询题  |
+| **尝试次数** | 2 次 (第一次尝试后会有反馈) |
+| **⚠️ 重要** | <br>**按顺序**答题 (删除/更新操作是连贯的)  |
 
 ---
 
 # 1. SELECT 语句 (查询)###基础与筛选
-* 
-**基础:** `SELECT column1, column2 FROM TableName;` 
+* **基础:** `SELECT column1, column2 FROM TableName;` 
 
 
-* 
-**去重:** `SELECT DISTINCT column FROM TableName;` 
+* **去重:** `SELECT DISTINCT column FROM TableName;` 
 
 
-* 
-**Where:** `WHERE column > 100` 
+* **Where:** `WHERE column > 100` 
 
 
-* 
-**Between:** `WHERE column BETWEEN 10 AND 50` (范围) 
+* **Between:** `WHERE column BETWEEN 10 AND 50` (范围) 
 
 
-* 
-**In List:** `WHERE column IN ('val1', 'val2')` (在列表中) 
+* **In List:** `WHERE column IN ('val1', 'val2')` (在列表中) 
 
 
-* 
-**Nulls:** `WHERE column IS NULL` 或 `IS NOT NULL` 
+* **Nulls:** `WHERE column IS NULL` 或 `IS NOT NULL` 
 
 
 
 ###多重条件
-* 
-`WHERE (条件1) AND (条件2);` 
+* `WHERE (条件1) AND (条件2);` 
 
 
-* 
-`WHERE (条件1) OR (条件2);` 
+* `WHERE (条件1) OR (条件2);` 
 
 
 
 ###模式匹配
-* 
-**LIKE:** `'pattern%'` (以...开头) 或 `'%pattern%'` (包含) 
+* **LIKE:** `'pattern%'` (以...开头) 或 `'%pattern%'` (包含) 
 
 
-* 
-**正则:** `~* '^pattern.*$'` (不区分大小写) 
+* **正则:** `~* '^pattern.*$'` (不区分大小写) 
 
 
 
 ###排序
-* 
-`ORDER BY column ASC;` (升序) 
+* `ORDER BY column ASC;` (升序) 
 
 
-* 
-`ORDER BY column DESC;` (降序) 
+* `ORDER BY column DESC;` (降序) 
 
 
-* 
-`LIMIT 10;` (限制行数) 
+* `LIMIT 10;` (限制行数) 
 
 
 
@@ -395,29 +354,24 @@ UPDATE TableName SET col1 = 'val1', col2 = 'val2' WHERE condition;
 
 
 
-###百分比计算
-* 
-**减少 8%:** `SET price = price * 0.92` 
+### 百分比计算
+* **减少 8%:** `SET price = price * 0.92` 
 
 
-* 
-**增加 10%:** `SET price = price * 1.10` 
+* **增加 10%:** `SET price = price * 1.10` 
 
 
 
 ---
 
 # 3. DELETE 语句 (删除)
-* 
-**标准:** `DELETE FROM TableName WHERE condition;` 
+* **标准:** `DELETE FROM TableName WHERE condition;` 
 
 
-* 
-**空值检查:** `DELETE FROM TableName WHERE column IS NULL;` 
+* **空值检查:** `DELETE FROM TableName WHERE column IS NULL;` 
 
 
-* 
-**列表检查:** `DELETE FROM TableName WHERE column IN ('val1', 'val2');` 
+* **列表检查:** `DELETE FROM TableName WHERE column IN ('val1', 'val2');` 
 
 
 
@@ -452,28 +406,23 @@ WHERE 过滤条件;
 ---
 
 # 5. 聚合函数
-* 
-**计数:** `SELECT COUNT(*) FROM TableName;` 
+* **计数:** `SELECT COUNT(*) FROM TableName;` 
 
 
-* 
-**平均值 (四舍五入):** `SELECT ROUND(AVG(column), 2) ...` 
+* **平均值 (四舍五入):** `SELECT ROUND(AVG(column), 2) ...` 
 
 
-* 
-**求和:** `SELECT SUM(column) ...` 
+* **求和:** `SELECT SUM(column) ...` 
 
 
-* 
-**分组:** `SELECT column, COUNT(*) FROM TableName GROUP BY column;` 
+* **分组:** `SELECT column, COUNT(*) FROM TableName GROUP BY column;` 
 
 
 
 ---
 
 # 6. 级联效应 (CASCADE) - 关键！
-* 
-**规则:** 当删除/更新时，计算 **主表** 和 **关联表** 中的行数。 
+* **规则:** 当删除/更新时，计算 **主表** 和 **关联表** 中的行数。 
 
 
 * **策略:** 使用 `UNION` 将计数相加。
@@ -488,8 +437,7 @@ SELECT COUNT(*) FROM RelatedTable ...;
 
 
 
-* 
-**数学:** 结果 1 + 结果 2 = **受影响的总行数**。 
+* **数学:** 结果 1 + 结果 2 = **受影响的总行数**。 
 
 
 
@@ -518,36 +466,30 @@ CREATE TABLE TableName (
 ---
 
 # 8. ALTER TABLE (修改表)
-* 
-**添加列:** `ALTER TABLE TableName ADD COLUMN columnname DATATYPE;` 
+* **添加列:** `ALTER TABLE TableName ADD COLUMN columnname DATATYPE;` 
 
 
 
 ---
 
 # 9. INSERT Statements (插入)
-* 
-**语法:** `INSERT INTO TableName (col1, col2) VALUES ('val1', 'val2');` 
+* **语法:** `INSERT INTO TableName (col1, col2) VALUES ('val1', 'val2');` 
 
 
 
 ---
 
 # 10. 事务块 (Transaction Blocks)
-* 
-**开始:** `BEGIN;` 
+* **开始:** `BEGIN;` 
 
 
-* 
-**保存:** `COMMIT;` 
+* **保存:** `COMMIT;` 
 
 
-* 
-**撤销:** `ROLLBACK;` 
+* **撤销:** `ROLLBACK;` 
 
 
-* 
-**测试策略:** 运行 `BEGIN`，查看数据，运行 `DELETE`，再次查看数据，最后 `ROLLBACK` 撤销测试。 
+* **测试策略:** 运行 `BEGIN`，查看数据，运行 `DELETE`，再次查看数据，最后 `ROLLBACK` 撤销测试。 
 
 
 
@@ -575,7 +517,7 @@ CREATE TABLE TableName (
 | `+` | 1 或更多字符 | <br>`.+` (至少一个) |
 | `\d` | 任意数字 | <br>`\d` |
 | `\d{4,}` | 4个或更多数字 | <br>`\d{4,}` |
-| `(A | B)` | A 或 B |
+| `(A | B)` | A 或 B | <br>`\d{4,}` |
 
 ---
 
