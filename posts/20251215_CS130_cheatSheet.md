@@ -1,149 +1,430 @@
 ---
-title: CS130 SQL 速查表：实验考试 3
-date: 2025-12-15
-categories: CS130, Database
-tags: SQL, JOIN, Aggregate, Transaction, Relational Algebra, CASCADE
-summary_zh: CS130 数据库实验考试 3 的核心 SQL 语法、关键易错点、DML/DDL 和级联效应检查清单。
+title: CS130 Lab Exam 3: SQL Official Cheat Sheet (Full Version)
+title_en: CS130 Lab Exam 3: SQL Official Cheat Sheet (Full Version)
+title_zh: CS130 实验考试 3：SQL 官方速查表 (完整版)
+date: 2025-12-13
+categories: CS130
+tags: SQL, CheatSheet, Relational Algebra, PostgreSQL, ExamPrep
+summary_en: The complete, official cheat sheet including Transactions, Cascade counting, Regex, and DDL.
+summary_zh: 包含事务处理、级联计数、正则和 DDL 的完整官方速查表。
 ---
-[END]
+
 [EN]
----
-title: CS130 SQL Cheat Sheet - Lab Exam 3
-date: 2025-12-15
-categories: CS130, Database
-tags: SQL, JOIN, Aggregate, Transaction, Relational Algebra, CASCADE
-summary_en: A comprehensive guide covering core SQL syntax, critical tricky points, DML/DDL, and the CASCADE effect checklist for the CS130 Lab Exam 3.
----
-[END]
+![CS130_cheatSheet](images/20251215_CS130_cheatSheet.png)
+# 📚 Exam Information & Rules
 
-[ZH] # 📚 CS130 SQL 速查表：终极双语版 [END]
-[EN] # 📚 CS130 SQL Cheat Sheet: Ultimate Bilingual Version [END]
-
-[ZH]
-### [cite_start]考试信息 (Exam Information) [cite: 2]
-* [cite_start]**时长 (Duration)**: 90 minutes [cite: 3]
-* [cite_start]**问题数量 (Questions)**: 12 个 SQL 查询 (12 SQL queries) [cite: 3]
-* [cite_start]**尝试次数 (Attempts)**: 2 次 (第一次尝试后有反馈) [cite: 3]
-* [cite_start]**重要提醒 (Important)**: 必须**按顺序**回答问题 (删除/更新操作是顺序执行的) [cite: 3, 171]。
-[END]
-[EN]
-### [cite_start]Exam Information [cite: 2]
-* [cite_start]**Duration**: 90 minutes [cite: 3]
-* [cite_start]**Questions**: 12 SQL queries [cite: 3]
-* [cite_start]**Attempts**: 2 (feedback after first attempt) [cite: 3]
-* [cite_start]**Important**: Answer questions IN ORDER (deletes/updates are sequential)[cite: 3, 171].
-[END]
+| Item | Details |
+| :--- | :--- |
+| **Duration** | 90 minutes |
+| **Questions** | 12 SQL queries |
+| **Attempts** | 2 (feedback available after first attempt) |
+| **⚠️ CRITICAL** | [cite_start]Answer questions **IN ORDER** (deletes/updates are sequential) [cite: 3] |
 
 ---
 
-[cite_start][ZH] ## 1. SELECT 语句 (查询) [cite: 4] [END]
-[cite_start][EN] ## 1. SELECT Statements (Queries) [cite: 4] [END]
+# 1. SELECT Statements
 
-| [cite_start][ZH] **功能** [cite: 5] | [cite_start][EN] **Function** [cite: 5] | [cite_start][ZH] **SQL 语法** [cite: 6] | [cite_start][EN] **SQL Syntax** [cite: 6] |
-| :--- | :--- | :--- | :--- |
-| [cite_start][ZH] 基础查询 [cite: 5] | [cite_start][EN] Basic Select [cite: 5] | [cite_start]`SELECT column1, column2 FROM TableName;` [cite: 6] | [cite_start]`SELECT column1, column2 FROM TableName;` [cite: 6] |
-| [cite_start][ZH] 唯一值 [cite: 7] | [cite_start][EN] Unique Values [cite: 7] | [cite_start]`SELECT DISTINCT column FROM TableName;` [cite: 7] | [cite_start]`SELECT DISTINCT column FROM TableName;` [cite: 7] |
-| [cite_start][ZH] 范围 (包含边界) [cite: 13, 137] | [cite_start][EN] Range (Inclusive) [cite: 13, 137] | [cite_start]`WHERE column BETWEEN 10 AND 50;` [cite: 13] | [cite_start]`WHERE column BETWEEN 10 AND 50;` [cite: 13] |
-| [cite_start][ZH] 列表匹配 [cite: 14] | [cite_start][EN] List Match [cite: 14] | [cite_start]`WHERE column IN ('val1', 'val2');` [cite: 14] | [cite_start]`WHERE column IN ('val1', 'val2');` [cite: 14] |
-| [cite_start][ZH] 空值 [cite: 15, 135] | [cite_start][EN] IS NULL [cite: 15, 135] | [cite_start]`WHERE column IS NULL` [cite: 15, 136] | [cite_start]`WHERE column IS NULL` [cite: 15, 136] |
-| [cite_start][ZH] 排序 (降序) [cite: 23] | [cite_start][EN] Ordering (DESC) [cite: 23] | [cite_start]`ORDER BY column DESC;` [cite: 23] | [cite_start]`ORDER BY column DESC;` [cite: 23] |
-| [cite_start][ZH] 限制行数 [cite: 23] | [cite_start][EN] Limit Rows [cite: 23] | [cite_start]`LIMIT 10;` [cite: 23] | [cite_start]`LIMIT 10;` [cite: 23] |
+### Basic & Filtering
+* [cite_start]**Select All:** `SELECT * FROM TableName;` [cite: 6]
+* [cite_start]**Distinct:** `SELECT DISTINCT column FROM TableName;` [cite: 7]
+* [cite_start]**Comparison:** `WHERE column > 100` [cite: 12]
+* [cite_start]**Range (Inclusive):** `WHERE column BETWEEN 10 AND 50` (Includes 10 & 50!) [cite: 13]
+* [cite_start]**List Check:** `WHERE column IN ('val1', 'val2')` [cite: 14]
 
-[ZH]
-* [cite_start]**模式匹配 (Pattern Matching)** [cite: 19][cite_start]: `WHERE column LIKE 'pattern%';` (以 `pattern` 开头) [cite: 20]
-* [cite_start]**正则表达式 (Regex)**: `WHERE column ~* '^pattern.*\$';` [cite: 21]
-[END]
-[EN]
-* [cite_start]**Pattern Matching**: `WHERE column LIKE 'pattern%';` (Starts with `pattern`) [cite: 20]
-* [cite_start]**Regex**: `WHERE column ~* '^pattern.*\$';` [cite: 21]
-[END]
+> **💀 NULL TRAP:**
+> Never use `= NULL`. [cite_start]Always use `IS NULL` or `IS NOT NULL`. [cite: 15, 16]
 
----
+### [cite_start]Pattern Matching (LIKE & Regex) [cite: 19, 21]
+* **Contains:** `LIKE '%pattern%'`
+* **Starts with:** `LIKE 'pattern%'`
+* **Regex (Case-Insensitive):** `WHERE column ~* '^pattern.*$'`
 
-[ZH] ## 2. DML 语句 (修改数据) [END]
-[EN] ## 2. DML Statements (Data Modification) [END]
-
-### [cite_start][ZH] 2.1 UPDATE (更新) [cite: 24] [END]
-### [cite_start][EN] 2.1 UPDATE [cite: 24] [END]
-* [cite_start][ZH] **基本语法**: `UPDATE TableName SET column = 'new_value' WHERE condition:` [cite: 27, 28]
-* [cite_start][EN] **Basic Syntax**: `UPDATE TableName SET column = 'new_value' WHERE condition:` [cite: 27, 28]
-
-* [cite_start][ZH] **🚨 关键：百分比计算 (Percentage Calculations)**[cite: 30]: [END]
-* [cite_start][EN] **🚨 CRITICAL: Percentage Calculations**[cite: 30]: [END]
-    * [cite_start][ZH] 减少 8% (保留 92%): `UPDATE Table SET price = price * 0.92 WHERE cond;` [cite: 30, 31, 32, 142, 143, 167]
-    * [cite_start][EN] Decrease by 8% (keep 92%): `UPDATE Table SET price = price * 0.92 WHERE cond;` [cite: 30, 31, 32, 142, 143, 167]
-    * [cite_start][ZH] 增加 10%: `UPDATE Table SET price = price * 1.10 WHERE cond;` [cite: 30, 31, 32, 147, 148, 149]
-    * [cite_start][EN] Increase by 10%: `UPDATE Table SET price = price * 1.10 WHERE cond;` [cite: 30, 31, 32, 147, 148, 149]
-
-### [cite_start][ZH] 2.2 DELETE (删除) [cite: 33] [END]
-### [cite_start][EN] 2.2 DELETE [cite: 33] [END]
-* [cite_start][ZH] **基本语法**: `DELETE FROM TableName WHERE condition:` [cite: 34]
-* [cite_start][EN] **Basic Syntax**: `DELETE FROM TableName WHERE condition:` [cite: 34]
-* [cite_start][ZH] **空值删除**: `DELETE FROM TableName WHERE column IS NULL:` [cite: 36]
-* [cite_start][EN] **Delete NULL Rows**: `DELETE FROM TableName WHERE column IS NULL:` [cite: 36]
+### [cite_start]Ordering & Limits [cite: 23]
+* **Ascending:** `ORDER BY column ASC`
+* **Descending:** `ORDER BY column DESC`
+* **Limit:** `LIMIT 10`
 
 ---
 
-[cite_start][ZH] ## 3. JOIN 查询 (连接) [cite: 38] [END]
-[cite_start][EN] ## 3. JOIN Queries [cite: 38] [END]
+# 2. UPDATE Statements
 
-* [cite_start][ZH] **黄金法则**: $n$ 个表需要 $n-1$ 个连接条件 [cite: 127, 163, 177]。 [END]
-* [cite_start][EN] **Golden Rule**: $n$ tables require $n-1$ join conditions[cite: 127, 163, 177]. [END]
+### Syntax
+```sql
+UPDATE TableName SET col1 = 'val1' WHERE condition;
 
-### [cite_start][ZH] 3.1 逗号 + WHERE (Lab 标准) [cite: 39] [END]
-### [cite_start][EN] 3.1 Comma + WHERE (Lab Standard) [cite: 39] [END]
+```
+
+Percentage Math (Don't fail this!) 
+
+* **Decrease by 8%:** Multiply by **0.92** (1.00 - 0.08).
+* `UPDATE Table SET price = price * 0.92 WHERE cond;`
+
+
+* **Increase by 10%:** Multiply by **1.10**.
+* `UPDATE Table SET price = price * 1.10 WHERE cond;`
+
+
+
+---
+
+3. DELETE Statements 
+
+* **Standard:** `DELETE FROM TableName WHERE condition;`
+* **Safety:** Always check what you are deleting first (See Section 10: Transactions).
+
+---
+
+#4. JOIN QueriesMethod 1: Comma + WHERE (Used in Labs) 
+
+*This is the style often used in CS130 labs.*
 
 ```sql
+SELECT T1.col, T2.col
+FROM Table1 AS T1, Table2 AS T2
+WHERE (T1.key = T2.key) AND (filters);
+
+```
+
+Method 2: JOIN ... ON 
+
+```sql
+SELECT T1.col, T2.col
+FROM Table1 AS T1
+JOIN Table2 AS T2 ON T1.key = T2.key
+WHERE filters;
+
+```
+
+> 
+> **⚠️ N Tables Rule:** If you join **N** tables, you need **N-1** join conditions. 
+> 
+> 
+
+---
+
+5. Aggregate Functions 
+
+| Function | Usage | Note |
+| --- | --- | --- |
+| **COUNT(*)** | `SELECT COUNT(*) ...` | Counts **rows**. |
+| **SUM(col)** | `SELECT SUM(cost) ...` | Adds up **values**. |
+| **AVG(col)** | `SELECT ROUND(AVG(cost), 2) ...` | Averages values. `ROUND(x, 2)` keeps 2 decimals. 
+
+ |
+
+GROUP BY Rule 
+
+If a column is in `SELECT` but NOT in an aggregate function, it **MUST** be in `GROUP BY`.
+
+---
+
+6. CASCADE Effects (CRITICAL!) 
+
+When deleting/updating a row, if `ON DELETE CASCADE` is set, related rows in other tables are also deleted.
+**Exam Task:** Calculate TOTAL rows affected.
+
+**The Strategy (Union):** 
+
+```sql
+SELECT COUNT(*) FROM MainTable WHERE key = 'value'
+UNION
+SELECT COUNT(*) FROM RelatedTable WHERE key = 'value';
+
+```
+
+> **Math:** Result 1 + Result 2 = **Total Rows Affected**.
+
+---
+
+7. CREATE TABLE 
+
+```sql
+CREATE TABLE TableName (
+    col1 DATATYPE NOT NULL,
+    col2 DATATYPE NOT NULL,
+    CONSTRAINT TableName_PKEY PRIMARY KEY (col1)
+);
+
+```
+
+**With Foreign Keys & Cascade:** 
+
+```sql
+... REFERENCES Parent(key) ON UPDATE CASCADE ON DELETE CASCADE
+
+```
+
+---
+
+8. ALTER TABLE 
+
+* **Add Column:** `ALTER TABLE TableName ADD COLUMN columnname DATATYPE;`
+
+---
+
+9. Transaction Blocks (Safe Testing) 
+
+Use this to test a `DELETE` or `UPDATE` without permanently ruining the data.
+
+```sql
+BEGIN;          -- 1. Start transaction
+SELECT ...;     -- 2. Check data before
+DELETE ...;     -- 3. Perform risky operation
+SELECT ...;     -- 4. Check if it looks right
+ROLLBACK;       -- 5. Undo everything!
+
+```
+
+*(Only use `COMMIT;` if you are 100% sure and the question asks for it)*
+
+---
+
+#10. Regex & Operators ReferenceOperators 
+
+| Op | Meaning | Op | Meaning |
+| --- | --- | --- | --- |
+| `=` | Equals | `IS NULL` | Is Empty |
+| `<>` | Not Equals | `IN (...)` | In a list |
+| `~*` | Regex (Case-insensitive) | `BETWEEN` | Inclusive Range |
+
+Regex Patterns 
+
+| Symbol | Meaning | Example |
+| --- | --- | --- |
+| `^` | Start of string | `^CS` (Starts with CS) |
+| `$` | End of string | `Road$` (Ends with Road) |
+| `.` | Any char | `A.B` (A, anything, B) |
+| `*` | 0 or more | `.*` (Anything) |
+| `+` | 1 or more | `.+` (At least one char) |
+| `\d` | Digit | `\d{4,}` (4+ digits) |
+| `|` | OR | `(A|B)` (A or B) |
+
+---
+
+11. Relational Algebra (RA) Symbols 
+
+| Symbol | Name | SQL Mapping |
+| --- | --- | --- |
+| **σ** (Sigma) | Selection | `WHERE` (Filters Rows) |
+| **π** (Pi) | Projection | `SELECT` (Selects Columns) |
+| **×** | Cartesian | `FROM T1, T2` (No Join condition) |
+| **⨝** | Natural Join | `WHERE T1.key = T2.key` |
+| **∪** | Union | `UNION` |
+| **∧** | AND | `AND` |
+| **∨** | OR | `OR` |
+
+[END]
+
 [ZH]
+![CS130_cheatSheet](images/20251215_CS130_cheatSheet.png)
+#📚 考试信息与规则 (官方版)| 项目 | 详情 |
+| --- | --- |
+| **时长** | 90 分钟 |
+| **题量** | 12 道 SQL 查询题 |
+| **尝试次数** | 2 次 (第一次尝试后会有反馈) |
+| **⚠️ 关键点** | 必须**按顺序**答题 (因为删除/更新操作是连贯的，跳题会导致数据对不上) 
+
+ |
+
+---
+
+#1. SELECT 语句 (查询)###基础与筛选* 
+**查所有:** `SELECT * FROM TableName;` 
+
+
+* 
+**去重:** `SELECT DISTINCT column FROM TableName;` 
+
+
+* 
+**范围 (包含边界):** `WHERE column BETWEEN 10 AND 50` (包含 10 和 50!) 
+
+
+* 
+**列表检查:** `WHERE column IN ('val1', 'val2')` 
+
+
+
+> **💀 空值陷阱 (NULL TRAP):**
+> 永远不要写 `= NULL`。必须使用 `IS NULL` 或 `IS NOT NULL`。 
+> 
+> 
+
+模式匹配 (LIKE 与 正则) 
+
+* **模糊匹配:** `LIKE '%pattern%'` (包含)
+* **正则 (忽略大小写):** `WHERE column ~* '^pattern.*$'`
+
+排序与限制 
+
+* **升序:** `ORDER BY column ASC`
+* **降序:** `ORDER BY column DESC`
+* **限制行数:** `LIMIT 10`
+
+---
+
+#2. UPDATE 语句 (更新)###语法```sql
+UPDATE TableName SET col1 = 'val1' WHERE condition;
+
+```
+
+百分比数学题 (千万别算错!) 
+
+* **减少 8% (打92折):** 乘以 **0.92** (1.00 - 0.08)。
+* `UPDATE Table SET price = price * 0.92 WHERE cond;`
+
+
+* **增加 10% (涨价):** 乘以 **1.10**。
+* `UPDATE Table SET price = price * 1.10 WHERE cond;`
+
+
+
+---
+
+3. DELETE 语句 (删除) 
+
+* **标准写法:** `DELETE FROM TableName WHERE condition;`
+* **安全建议:** 在删除前，先用 SELECT 确认你要删的是什么 (参见第 9 节: 事务)。
+
+---
+
+#4. JOIN 查询 (连接表)方法 1: 逗号隔开 (实验室常用) 
+
+*这是 CS130 Lab 中最常见的写法。*
+
+```sql
 SELECT T1.col, T2.col
 FROM Table1 AS T1, Table2 AS T2
-WHERE (T1.key = T2.key) AND (额外过滤条件);
-[END]
-[EN]
+WHERE (T1.key = T2.key) AND (其他过滤条件);
+
+```
+
+方法 2: 标准写法 (JOIN ON) 
+
+```sql
 SELECT T1.col, T2.col
-FROM Table1 AS T1, Table2 AS T2
-WHERE (T1.key = T2.key) AND (additional_filters);
-[END]
-[ZH] ## 4. 聚合函数与分组 1 [END][EN] ## 4. Aggregate Functions and GROUP BY 2 [END][ZH] 函数 [EN] Function [ZH] SQL 语法 [EN] SQL Syntax [ZH] 计数 7[EN] Count 8SELECT COUNT(*) FROM TableName; 9SELECT COUNT(*) FROM TableName; 10[ZH] 平均值 11[EN] Average 12SELECT AVG(column) FROM TableName; 13SELECT AVG(column) FROM TableName; 14[ZH] 四舍五入 15[EN] Round 16SELECT ROUND(AVG(column), 2) FROM TableName; 17SELECT ROUND(AVG(column), 2) FROM TableName; 18[ZH] 4.1 GROUP BY 分组 19 [END][EN] 4.1 GROUP BY 20 [END][ZH] 基本分组: SELECT column, COUNT(*) FROM TableName GROUP BY column; 21[EN] Basic Grouping: SELECT column, COUNT(*) FROM TableName GROUP BY column; 22[ZH] 🚨 关键：COUNT vs SUM23: [END][EN] 🚨 CRITICAL: COUNT vs SUM24: [END][ZH] 正确: COUNT(*) 统计行数 25。 [END][EN] Correct: COUNT(*) counts rows26. [END][ZH] 错误: SUM() 会将列值相加 27。 [END][EN] WRONG: SUM() adds column values28. [END][ZH] ## 5. DDL/事务与级联 [END][EN] ## 5. DDL / Transactions and CASCADE [END][ZH] 5.1 CREATE TABLE (创建表) 29 [END][EN] 5.1 CREATE TABLE 30 [END][ZH] 带级联外键 (With CASCADE Foreign Keys): 31[EN] With CASCADE Foreign Keys: 32SQL[ZH]
-CREATE TABLE RelationshipTable (
-    col1 TEXT NOT NULL REFERENCES Parent1(key) ON UPDATE CASCADE ON DELETE CASCADE,
-    col2 INTEGER NOT NULL REFERENCES Parent2(key) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT RelTable_PKEY PRIMARY KEY (col1, col2)
-);
-[END]
-[EN]
-CREATE TABLE RelationshipTable (
-    col1 TEXT NOT NULL REFERENCES Parent1(key) ON UPDATE CASCADE ON DELETE CASCADE,
-    col2 INTEGER NOT NULL REFERENCES Parent2(key) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT RelTable_PKEY PRIMARY KEY (col1, col2)
-);
-[END]
-[ZH] 5.2 事务块 (Transaction Blocks) 33 [END][EN] 5.2 Transaction Blocks 34 [END][ZH] 用途: 用于安全测试 DML (DELETE/UPDATE) 的影响 35。 [END][EN] Purpose: Used for safely testing DML (DELETE/UPDATE) effects36. [END]SQL[ZH]
-BEGIN; -- 开始事务 [cite: 93, 97]
--- DML 语句在这里 [cite: 94]
-SELECT COUNT(*) FROM AffectedTable;
-ROLLBACK; -- 撤销所有更改 (Undo all changes) [cite: 96, 99, 105]
--- COMMIT; -- 永久保存更改 (Save changes permanently) [cite: 95, 98]
-[END]
-[EN]
-BEGIN; -- Start Transaction [cite: 93, 97]
--- DML statements here [cite: 94]
-SELECT COUNT(*) FROM AffectedTable;
-ROLLBACK; -- Undo all changes [cite: 96, 99, 105]
--- COMMIT; -- Save changes permanently [cite: 95, 98]
-[END]
-[ZH] ## 6. CRITICAL: 级联效应与检查清单 [END][EN] ## 6. CRITICAL: CASCADE & Checklist [END][ZH] 6.1 CRITICAL: 级联效应 (CASCADE) 影响统计 37 [END][EN] 6.1 CRITICAL: CASCADE Effect Row Count 38 [END][ZH] 计算方法: 必须统计主表和所有关联表受影响的行数总和 393939393939393939393939。 [END][EN] Calculation: MUST count the total number of affected rows in the main table AND all related tables404040404040404040404040. [END]SQL[ZH]
--- 统计受影响的总行数
-SELECT COUNT(*) FROM MainTable WHERE condition -- (主表行数) [cite: 68]
+FROM Table1 AS T1
+JOIN Table2 AS T2 ON T1.key = T2.key
+WHERE 其他过滤条件;
+
+```
+
+> 
+> **⚠️ N 表定律:** 如果你要连接 **N** 张表，你必须写 **N-1** 个连接条件 (Join Conditions)。 
+> 
+> 
+
+---
+
+5. 聚合函数与分组 
+
+| 函数 | 用法 | 注意 |
+| --- | --- | --- |
+| **COUNT(*)** | `SELECT COUNT(*) ...` | 统计**行数**。 |
+| **SUM(col)** | `SELECT SUM(cost) ...` | 统计数值总和 (别用来数行数!)。 |
+| **AVG(col)** | `SELECT ROUND(AVG(cost), 2) ...` | 平均值。`ROUND(x, 2)` 保留两位小数。 
+
+ |
+
+GROUP BY 铁律 
+
+如果在 SELECT 中出现了一个列，且它**没有**被包含在聚合函数(如 COUNT, SUM)中，那么它**必须**出现在 `GROUP BY` 子句里。
+
+---
+
+6. 级联效应 (CASCADE) - 必考点! 
+
+当删除/更新某行时，如果表定义了 `ON DELETE CASCADE`，关联表的数据也会被自动删除。
+**考试任务:** 计算受影响的**总行数**。
+
+**解题策略 (使用 UNION):** 
+
+```sql
+SELECT COUNT(*) FROM MainTable WHERE key = 'value'
 UNION
-SELECT COUNT(*) FROM RelatedTable WHERE condition; -- (关联表行数) [cite: 69]
--- 将 UNION 的结果加总得到最终答案！ [cite: 70]
+SELECT COUNT(*) FROM RelatedTable WHERE key = 'value';
+
+```
+
+> **计算:** 结果 1 (主表删除数) + 结果 2 (关联表级联删除数) = **受影响总行数**。
+
+---
+
+7. CREATE TABLE (建表) 
+
+```sql
+CREATE TABLE TableName (
+    col1 DATATYPE NOT NULL,
+    col2 DATATYPE NOT NULL,
+    CONSTRAINT TableName_PKEY PRIMARY KEY (col1)
+);
+
+```
+
+**外键与级联设置:** 
+
+```sql
+... REFERENCES Parent(key) ON UPDATE CASCADE ON DELETE CASCADE
+
+```
+
+---
+
+8. ALTER TABLE (修改表) 
+
+* **添加列:** `ALTER TABLE TableName ADD COLUMN columnname DATATYPE;`
+
+---
+
+9. 事务块 (安全测试大法) 
+
+考试神器！用于测试 `DELETE` 或 `UPDATE` 是否正确，而不会真的毁掉数据。
+
+```sql
+BEGIN;          -- 1. 开启事务
+SELECT ...;     -- 2. 操作前先看一眼数据
+DELETE ...;     -- 3. 执行危险操作
+SELECT ...;     -- 4. 再次查询，确认删对了吗？
+ROLLBACK;       -- 5. 回滚！撤销所有操作，就像什么都没发生过。
+
+```
+
+*(除非题目明确要求永久保存，否则尽量使用 ROLLBACK 恢复现场)*
+
+---
+
+#10. 正则表达式与符号参考常用操作符 
+
+| 符号 | 含义 | 符号 | 含义 |
+| --- | --- | --- | --- |
+| `=` | 等于 | `IS NULL` | 为空 |
+| `<>` | 不等于 | `IN (...)` | 在列表中 |
+| `~*` | 正则 (忽略大小写) | `BETWEEN` | 范围 (包含边界) |
+
+正则符号 (PostgreSQL) 
+
+| 符号 | 含义 | 例子 |
+| --- | --- | --- |
+| `^` | 字符串开头 | `^CS` (以 CS 开头) |
+| `$` | 字符串结尾 | `Road$` (以 Road 结尾) |
+| `.` | 任意字符 | `A.B` (A, 任意, B) |
+| `*` | 0次或多次 | `.*` (任意内容) |
+| `+` | 1次或多次 | `.+` (至少有一个字符) |
+| `\d` | 数字 | `\d{4,}` (4个以上数字) |
+| `|` | 或 (OR) | `(A|B)` (A 或者 B) |
+
+---
+
+11. 关系代数 (RA) 符号对照 
+
+| 符号 | 名称 | SQL 对应 |
+| --- | --- | --- |
+| **σ** (Sigma) | 选择 (Selection) | `WHERE` (筛选行) |
+| **π** (Pi) | 投影 (Projection) | `SELECT` (筛选列) |
+| **×** | 笛卡尔积 | `FROM T1, T2` (无连接条件) |
+| **⨝** | 自然连接 | `WHERE T1.key = T2.key` |
+| **∪** | 并集 | `UNION` |
+| **∧** | AND | `AND` |
+| **∨** | OR | `OR` |
+
 [END]
-[EN]
--- Count Total Affected Rows
-SELECT COUNT(*) FROM MainTable WHERE condition -- (Main Table Rows) [cite: 68]
-UNION
-SELECT COUNT(*) FROM RelatedTable WHERE condition; -- (Related Table Rows) [cite: 69]
--- Sum the results of the UNION to get the final answer! [cite: 70]
-[END]
-[ZH] 6.2 易错点总结 (Tricky Points) 41 [END][EN] 6.2 Common Mistakes 42 [END][ZH] 易错点 [EN] Mistake [ZH] 正确做法 [EN] Correction [ZH] NULL 比较 47[EN] NULL Comparison 48WHERE col IS NULL 49WHERE col IS NULL 50[ZH] 缺少 JOIN 条件 51[EN] Missing Join Cond. 52$n$ tables $= n-1$ joins 53$n$ tables $= n-1$ joins 54[ZH] 百分比错误 55[EN] Percentage Math 56$\times 0.92$ (减 8%) 57$\times 0.92$ (Decrease 8%) 58[ZH] AND/OR 逻辑 59[EN] AND/OR Logic 60使用 () 明确分组 61Use () for grouping 62[ZH] 6.3 最终检查清单 (Final Checklist) 63 [END][EN] 6.3 Final Checklist 64 [END][ZH] 是否使用了 IS NULL 而不是 = NULL? 65656565 [END][EN] Used IS NULL not = NULL? 66666666 [END][ZH] 是否所有 JOIN 条件都存在？ 67 [END][EN] All join conditions present? 68 [END][ZH] 是否计算了 CASCADE 效应，以统计受影响的总行数？ 69696969 [END][EN] Counted CASCADE effects for total rows affected? 70707070 [END][ZH] 百分比计算正确吗 (例如，减少 $8\% = \times 0.92$)? 71 [END][EN] Percentage math correct (e.g., decrease $8\% = \times 0.92$)? 72 [END][ZH] BETWEEN 包含边界，这是你想要的吗？ 73737373 [END][EN] BETWEEN includes boundaries - is that what you want? 74747474 [END][ZH] ## 7. 关系代数 (Relational Algebra, RA) 75 [END][EN] ## 7. Relational Algebra (RA) 76 [END][ZH] 符号 [EN] Symbol [ZH] 名称 [EN] Name [ZH] SQL 等价物 [EN] SQL Equivalent $\sigma$ (sigma)$\sigma$ (sigma)[ZH] 选择 [END][EN] Selection [END]WHERE 83WHERE 84$\pi$ (pi)$\pi$ (pi)[ZH] 投影 [END][EN] Projection [END]SELECT columns 85SELECT columns 86$\times$$\times$[ZH] 笛卡尔积 [END][EN] Cartesian Product [END]FROM T1, T2 (无 WHERE 连接) 87FROM T1, T2 (no WHERE join) 88$\bowtie$$\bowtie$[ZH] 自然连接 [END][EN] Natural Join [END]FROM T1, T2 WHERE T1.key = T2.key 89FROM T1, T2 WHERE T1.key = T2.key 90$\cup$$\cup$[ZH] 联合 [END][EN] Union [END]
