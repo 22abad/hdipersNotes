@@ -196,7 +196,7 @@ CREATE TABLE TableName (
 # 12. Regex Patterns (PostgreSQL)
 
 | Pattern           | Meaning                                    | Example                  |
-| ----------------- | ------------------------------------------ | ------------------------ | -------------- |
+| ----------------- | ------------------------------------------ | ------------------------ |
 | `^`               | Start of string                            | `^A` (Starts with A)     |
 | `$`               | End of string                              | `Road$` (Ends with Road) |
 | `*`               | 0 or more chars                            | `.*` (Anything)          |
@@ -207,7 +207,7 @@ CREATE TABLE TableName (
 | `[0-9]{4,}`       | 4 or more digits (PostgreSQL-friendly)     | `[0-9]{4,}`              |
 | `[[:digit:]]`     | Any digit (PostgreSQL ARE class)           | `[[:digit:]]`            |
 | `[[:digit:]]{4,}` | 4 or more digits (ARE class)               | `[[:digit:]]{4,}`        |
-| Alternation       | A or B (using parentheses)                 | `(A                      | B)` in pattern |
+| `(A\|B)`          | A or B                                     | `(A\|B)`                 |
 
 ---
 
@@ -457,7 +457,7 @@ CREATE TABLE TableName (
 # 12. 正则表达式模式 (PostgreSQL)
 
 | 模式              | 含义                                         | 例子                   |
-| ----------------- | -------------------------------------------- | ---------------------- | --- |
+| ----------------- | -------------------------------------------- | ---------------------- |
 | `^`               | 字符串开头                                   | `^A` (以 A 开头)       |
 | `$`               | 字符串结尾                                   | `Road$` (以 Road 结尾) |
 | `*`               | 0 或更多字符                                 | `.*` (任意)            |
@@ -468,7 +468,7 @@ CREATE TABLE TableName (
 | `[0-9]{4,}`       | 4 个或更多数字（PostgreSQL 兼容）            | `[0-9]{4,}`            |
 | `[[:digit:]]`     | 任意数字（ARE 字符类，PostgreSQL 原生）      | `[[:digit:]]`          |
 | `[[:digit:]]{4,}` | 4 个或更多数字（ARE 字符类）                 | `[[:digit:]]{4,}`      |
-| 选择 OR           | A 或 B（使用括号）                           | 模式中用 `(A           | B)` |
+| `(A\|B)`          | A 或 B                                       | `(A\|B)`               |
 
 ---
 
