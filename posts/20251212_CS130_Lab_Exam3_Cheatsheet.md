@@ -99,4 +99,12 @@ WHERE
 ORDER BY
     column1 ASC;
 ```
+
+### 2.2 关系代数映射
+
+*   **选择 ($\sigma$)**: 映射到 `WHERE`。过滤行。
+*   **投影 ($\pi$)**: 映射到 `SELECT`。过滤列。
+*   **自然连接 ($\bowtie$)**: 映射到 `NATURAL JOIN` 或 `JOIN ON`。
+*   **重命名 ($\rho$)**: 映射到 `AS`。
+
 [END]

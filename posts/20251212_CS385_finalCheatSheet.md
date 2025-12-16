@@ -60,6 +60,7 @@ This document serves as the primary reference for the CS385 Lab Exam 3. It conso
 | 类型强制转换          | ✅ 是                | ❌ 否                | ❌ 否                |
 | 对象比较              | 引用                | 引用                | 引用                |
 | `NaN` vs `NaN`        | `false`             | `false`             | ✅ `true`            |
+| `+0` vs `-0`          | `true`              | `true`              | ✅ `false`           |
 
 ### 1.2 数组突变矩阵
 
@@ -68,4 +69,6 @@ This document serves as the primary reference for the CS385 Lab Exam 3. It conso
 | `splice()` | 添加/删除元素                          | ✅ 是              |
 | `slice()`  | 返回浅拷贝                             | ❌ 否              |
 | `map()`    | 转换元素                               | ❌ 否              |
+| `filter()` | 选择元素                               | ❌ 否              |
+
 [END]
