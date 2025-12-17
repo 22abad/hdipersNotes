@@ -312,8 +312,8 @@ WHERE v.age < 20;
 [END]
 
 ---
-
-## [ZH] 中文版 (Chinese Version)
+[ZH]
+##  中文版 (Chinese Version)
 
 ### 🟢 第一关：关系代数热身 (RA to SQL)
 
