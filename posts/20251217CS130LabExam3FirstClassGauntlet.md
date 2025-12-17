@@ -18,6 +18,7 @@ summary_zh: 20 道模拟题完整补全。包含 DML 更新、多表连接、关
 3.  **`lab3_watched`**: `viewer_id`, `movie_id`, `watch_date`, `score`, `cinema_location`
 
 ---
+![20251217CS130LabExam3 Header Image](images/20251217CS130LabExam3FirstClassGauntlet.png)
 
 [EN]
 
